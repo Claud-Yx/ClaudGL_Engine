@@ -1,0 +1,7 @@
+﻿  main.cpp
+C:\Project\ClaudGL_Engine\include\GLFW\glfw3.h(3235,1): warning C4819: The file contains a character that cannot be represented in the current code page (949). Save the file in Unicode format to prevent data loss
+  (compiling source file 'main.cpp')
+  
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+main.obj : error LNK2019: unresolved external symbol gladLoadGLLoader referenced in function main
+C:\Project\ClaudGL_Engine\Debug\x64\Clinet.exe : fatal error LNK1120: 1 unresolved externals
