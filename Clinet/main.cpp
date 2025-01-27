@@ -1,37 +1,22 @@
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include <iostream>
+#include "pch.h"
+#include "EngineCore.h"
 
-#pragma comment(lib, "glfw3.lib")
+std::shared_ptr<GEngine> engine;
 
-const unsigned int WIN_W = 300;
-const unsigned int WIN_H = 300;
+void cbFramebufferSize( GLFWwindow* window, int width, int height );
 
 int main( void )
 {
-	glfwInit();
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 4 );
-	glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 6 );
-	glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-
-	if ( !gladLoadGLLoader( (GLADloadproc)glfwGetProcAddress ) )
-	{
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
-
-	GLFWwindow* window = glfwCreateWindow( WIN_W, WIN_H, "Hello GLFW", NULL, NULL );
-
-	glfwSetWindowPos( window, 100, 100 );
-	glfwMakeContextCurrent( window );
+	engine = GEngine::Generate();
+	engine->SetMainWindow( engine->CreateWindow( 800, 600, "Hello OpenGL", nullptr, nullptr ) );
 	
-	while ( !glfwWindowShouldClose( window ) )
-	{
-		glfwSwapBuffers( window );
-		glfwPollEvents();
-	}
+	engine->cbSetFramebufferSize( engine->kMainWindow, cbFramebufferSize );
 
-	glfwTerminate();
+	engine->kMainWindow
+}
 
-	return 0;
+void cbFramebufferSize( GLFWwindow* window, int width, int height )
+{
+
+	glViewport( 0, 0, width, height);
 }
