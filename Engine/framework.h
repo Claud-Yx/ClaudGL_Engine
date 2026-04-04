@@ -10,6 +10,9 @@
 
 #include <memory>
 #include <string>
+#include <functional>
+
+#include "Core/Keys.h"
 
 using int8 = __int8;
 using int16 = __int16;
