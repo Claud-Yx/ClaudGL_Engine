@@ -72,7 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)lib\$(Configuration)\$(PlatformTarget)\</OutDir>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Build\Engine\$(Configuration)\$(PlatformTarget)\</IntDir>
@@ -80,7 +80,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)lib\$(PlatformTarget)\</OutDir>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Build\Engine\$(Configuration)\$(PlatformTarget)\</IntDir>
@@ -88,7 +88,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)lib\$(Configuration)\$(PlatformTarget)\</OutDir>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Build\Engine\$(Configuration)\$(PlatformTarget)\</IntDir>
@@ -96,7 +96,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)lib\$(PlatformTarget)\</OutDir>
-    <IncludePath>$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
     <ExternalIncludePath>$(SolutionDir)include\;$(ExternalIncludePath)</ExternalIncludePath>
     <LibraryPath>$(SolutionDir)lib\$(PlatformTarget)\;$(LibraryPath)</LibraryPath>
     <IntDir>$(SolutionDir)Build\Engine\$(Configuration)\$(PlatformTarget)\</IntDir>
@@ -254,7 +254,83 @@
       <SDLCheck>true</SDLCheck>
       <LibCompiled>true</LibCompiled>
     </ClCompile>
-    <ClCompile Include="Core\InputManager.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
+    <ClCompile Include="Manager\InputManager.cpp">
+      <RuntimeLibrary>MultiThreadedDebugDll</RuntimeLibrary>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <Optimization>Disabled</Optimization>
+      <SupportJustMyCode>true</SupportJustMyCode>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <AssemblerListingLocation>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</AssemblerListingLocation>
+      <UndefineAllPreprocessorDefinitions>false</UndefineAllPreprocessorDefinitions>
+      <BrowseInformation>false</BrowseInformation>
+      <BrowseInformationFile>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</BrowseInformationFile>
+      <CompileAs>Default</CompileAs>
+      <UseDynamicDebugging>false</UseDynamicDebugging>
+      <ConformanceMode>true</ConformanceMode>
+      <DiagnosticsFormat>Column</DiagnosticsFormat>
+      <DisableLanguageExtensions>false</DisableLanguageExtensions>
+      <ErrorReporting>Prompt</ErrorReporting>
+      <ExpandAttributedSource>false</ExpandAttributedSource>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableASAN>false</EnableASAN>
+      <EnableFuzzer>false</EnableFuzzer>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <EnableEnhancedInstructionSet>NotSet</EnableEnhancedInstructionSet>
+      <EnableVectorLength>NotSet</EnableVectorLength>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ForceConformanceInForLoopScope>true</ForceConformanceInForLoopScope>
+      <GenerateModuleDependencies>false</GenerateModuleDependencies>
+      <GenerateSourceDependencies>false</GenerateSourceDependencies>
+      <GenerateXMLDocumentationFiles>false</GenerateXMLDocumentationFiles>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <IntrinsicFunctions>false</IntrinsicFunctions>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>Default</LanguageStandard_C>
+      <MinimalRebuild>false</MinimalRebuild>
+      <ModuleDependenciesFile>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</ModuleDependenciesFile>
+      <ModuleOutputFile>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</ModuleOutputFile>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+      <FavorSizeOrSpeed>Neither</FavorSizeOrSpeed>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <ObjectFileName>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</ObjectFileName>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ProgramDataBaseFileName>D:\YunProject\ClaudGL_Engine\lib\Debug\x64\ClaudGL.pdb</ProgramDataBaseFileName>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\ClaudGL.pch</PrecompiledHeaderOutputFile>
+      <PreprocessToFile>false</PreprocessToFile>
+      <PreprocessKeepComments>false</PreprocessKeepComments>
+      <PreprocessSuppressLineNumbers>false</PreprocessSuppressLineNumbers>
+      <RemoveUnreferencedCodeData>true</RemoveUnreferencedCodeData>
+      <ScanSourceForModuleDependencies>false</ScanSourceForModuleDependencies>
+      <ShowIncludes>false</ShowIncludes>
+      <SourceDependenciesFile>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</SourceDependenciesFile>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <BufferSecurityCheck>true</BufferSecurityCheck>
+      <SmallerTypeCheck>false</SmallerTypeCheck>
+      <SpectreMitigation>false</SpectreMitigation>
+      <StructMemberAlignment>Default</StructMemberAlignment>
+      <TrackerLogDirectory>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\Engine.tlog\</TrackerLogDirectory>
+      <TranslateIncludes>false</TranslateIncludes>
+      <MinimalRebuildFromTracking>true</MinimalRebuildFromTracking>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <UseFullPaths>true</UseFullPaths>
+      <WarningLevel>Level3</WarningLevel>
+      <XMLDocumentationFileName>D:\YunProject\ClaudGL_Engine\Build\Engine\Debug\x64\</XMLDocumentationFileName>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <IntelJCCErratum>false</IntelJCCErratum>
+      <BuildStlModules>false</BuildStlModules>
+      <TreatAngleIncludeAsExternal>false</TreatAngleIncludeAsExternal>
+      <ExternalWarningLevel>InheritWarningLevel</ExternalWarningLevel>
+      <TreatExternalTemplatesAsInternal>true</TreatExternalTemplatesAsInternal>
+      <DisableAnalyzeExternal>false</DisableAnalyzeExternal>
+      <PreprocessorDefinitions>_DEBUG;_LIB;_UNICODE;UNICODE;</PreprocessorDefinitions>
+      <SDLCheck>true</SDLCheck>
+      <LibCompiled>true</LibCompiled>
+    </ClCompile>
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -264,10 +340,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\EngineCore.h" />
-    <ClInclude Include="Core\InputManager.h" />
-    <ClInclude Include="Core\Keys.h" />
+    <ClInclude Include="Core\Logger.h" />
+    <ClInclude Include="Enum\InputKeys.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Manager\InputManager.h" />
     <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Enum\LogLevel.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

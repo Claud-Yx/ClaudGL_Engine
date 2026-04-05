@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include "Keys.h"
+#include "Enum/InputKeys.h"
 
 class MInputManager
 {

@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Core/EngineCore.h"
-#include "Core/InputManager.h"
+#include "Manager/InputManager.h"
 
 void cbFramebufferSize( GLFWwindow* window, int width, int height );
 void cbUpdate( float delta_time );

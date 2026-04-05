@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "InputManager.h"
 
-#include "EngineCore.h"
+#include "Core/EngineCore.h"
 
 bool MInputManager::IsValidKey( EKey key )
 {

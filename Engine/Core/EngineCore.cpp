@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "EngineCore.h"
 
-#include "InputManager.h"
+#include "Manager/InputManager.h"
 
 #include <iostream>
 
