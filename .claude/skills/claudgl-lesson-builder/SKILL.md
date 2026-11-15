@@ -16,7 +16,7 @@ description: ClaudGL Engine 강의 자료(A4 디자인 PDF)를 만들거나 강�
   - `slug` = PDF 파일 이름에 들어갈 영문 주제, `ver` = 강의 자료 버전. 자료가 아직 없는 강은 `None`과 `0`.
   - `PLAN_VERSION`, `PLAN_DATE` = 계획서의 버전과 날짜
 - 강의 계획서: `Docs/Handouts/src/plan.py` → `Docs/Handouts/ClaudGL_00_Plan_v<N>.pdf`
-- 강 파일: `Docs/Handouts/src/lesson_<Part>_<순서>.py` → `Docs/Handouts/ClaudGL_<강 번호>_<slug>_v<N>.pdf` (예: `lesson_1_5.py` → `ClaudGL_1-5_Logger_v1.pdf`). 파일 이름은 `curriculum.handout_name("1-5")`가 만든다. 가장 최근 강 파일을 견본으로 쓴다.
+- 강 파일: `Docs/Handouts/src/lesson_<Part>_<순서>.py` → `Docs/Handouts/ClaudGL_<강 번호>_<slug>_v<N>.pdf` (예: `lesson_1_5.py` → `ClaudGL_1-5_Logger_v1.pdf`). 파일 이름은 `curriculum.handout_name("1-5")`가 만든다. 미션이 있는 강의 견본은 `lesson_1_5.py`, 코드가 먼저 있는 강의 견본은 `lesson_1_3.py`다.
 - 빌드 엔진 `Docs/Handouts/_engine/`:
   - `common.py` — 헬퍼와 build(). 강 파일이 `from common import *`로 쓴다.
   - `base.css` — 스타일 (색·글꼴은 맨 위 `:root` 변수)
@@ -105,6 +105,9 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
     - `flow()` 칩의 작은 글씨에 긴 인라인 코드를 넣으면 글자 중간에서 끊긴다 → 칩에는 짧은 말만 쓰고 함수 이름은 캡션에 적는다.
     - 줄 범위를 `` `파일:12`〜`:26` ``처럼 붙여 쓰면 좁은 칸에서 숫자 중간이 끊긴다 → `〜` 양옆에 공백을 둔다. 강 번호 범위도 "1-1 〜 1-3강"처럼 띄운다.
     - 장마다 `pb=True`를 주면 반쯤 빈 쪽이 생긴다 → 개념 장은 이어 흐르게 둔다.
+    - 네댓 줄짜리 표가 쪽 사이에서 갈림 → 표를 `keep()`으로 감싼다. `pagebreak()`보다 먼저 써 본다 (앞 내용이 바뀌어도 빈 쪽이 생기지 않는다).
+    - 미션의 마지막 한두 단계만 다음 쪽으로 넘어감 → 단계 설명을 한 줄로 줄이고 겹치는 힌트를 뺀다. 미션은 한 쪽에 들어가는 분량이 알맞다 (8단계, 단계마다 힌트 1〜4개).
+    - 저장소의 한 줄이 104자를 넘어 인용할 수 없음 → 그 줄은 빼고 인용한 뒤, 내용을 표로 옮긴다 (예: 매개변수 표).
     - 고친 뒤 다시 빌드해 접촉 인화로 한 번 더 확인한다.
 6. 강이 추가되거나 제목·시간이 바뀌었으면 계획서도 버전을 올려 다시 빌드한다. 강의 자료가 새로 나온 것만으로는 계획서를 건드리지 않는다 (계획서에는 진행 상황이 없다).
 7. PDF 경로를 알려 주고, 이 강에서 Claud가 정해야 할 것(`box("decide")`에 넣은 것)을 채팅에 한 번 더 적는다.
