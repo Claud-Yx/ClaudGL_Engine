@@ -400,3 +400,7 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Handout build environment and intermediates (Docs/Handouts)
+Docs/Handouts/.venv/
+Docs/Handouts/_build/
