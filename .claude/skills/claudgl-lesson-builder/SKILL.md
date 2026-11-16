@@ -16,7 +16,7 @@ description: ClaudGL Engine 강의 자료(A4 디자인 PDF)를 만들거나 강�
   - `slug` = PDF 파일 이름에 들어갈 영문 주제, `ver` = 강의 자료 버전. 자료가 아직 없는 강은 `None`과 `0`.
   - `PLAN_VERSION`, `PLAN_DATE` = 계획서의 버전과 날짜
 - 강의 계획서: `Docs/Handouts/src/plan.py` → `Docs/Handouts/ClaudGL_00_Plan_v<N>.pdf`
-- 강 파일: `Docs/Handouts/src/lesson_<Part>_<순서>.py` → `Docs/Handouts/ClaudGL_<강 번호>_<slug>_v<N>.pdf` (예: `lesson_1_5.py` → `ClaudGL_1-5_Logger_v1.pdf`). 파일 이름은 `curriculum.handout_name("1-5")`가 만든다. 미션이 있는 강의 견본은 `lesson_1_5.py`, 코드가 먼저 있는 강의 견본은 `lesson_1_3.py`다.
+- 강 파일: `Docs/Handouts/src/lesson_<Part>_<순서>.py` → `Docs/Handouts/ClaudGL_<강 번호>_<slug>_v<N>.pdf` (예: `lesson_1_5.py` → `ClaudGL_1-5_Logger_v1.pdf`). 파일 이름은 `curriculum.handout_name("1-5")`가 만든다. 견본은 `lesson_1_1.py`(처음부터 쓰는 강)와 `lesson_1_4.py`(앞 강에서 쓴 코드를 고치는 강)다. Part 1의 여섯 강은 모두 함수 설명·예시·그림이 든 같은 양식이다.
 - 빌드 엔진 `Docs/Handouts/_engine/`:
   - `common.py` — 헬퍼와 build(). 강 파일이 `from common import *`로 쓴다.
   - `base.css` — 스타일 (색·글꼴은 맨 위 `:root` 변수)
@@ -26,7 +26,7 @@ description: ClaudGL Engine 강의 자료(A4 디자인 PDF)를 만들거나 강�
 - 중간 산출물: `Docs/Handouts/_build/` (HTML, 접촉 인화). `.venv/`와 함께 `.gitignore`에 들어 있다.
 - 빌드 환경: `Docs/Handouts/.venv` (pygments, pymupdf, pillow). 없으면 만든다.
   `python -m venv Docs\Handouts\.venv` 다음 `Docs\Handouts\.venv\Scripts\python.exe -m pip install pygments pymupdf pillow`
-- 글꼴은 PC에 설치된 것을 쓴다: 본문 Noto Sans KR, 코드 D2Coding, 표지 큰 글자 Cascadia Code. 새 PC에서 처음 빌드하면 PDF에 들어간 글꼴을 확인한다 (pymupdf의 `page.get_fonts()`). `D2Coding`이 없고 `GulimChe`가 보이면 브라우저가 D2Coding을 못 찾은 것이다. "사용자 전용"으로 설치된 글꼴은 headless Chrome·Edge에 보이지 않는다 (2026-11-16 회사 PC에서 확인). 그 상태에서는 코드 글꼴이 더 넓은 Cascadia Mono로 바뀌어 코드 블록의 긴 줄이 오른쪽에서 잘리므로, 코드 블록이 있는 강의 자료는 건네지 않는다. D2Coding을 "모든 사용자용"으로 설치한 뒤 다시 빌드한다.
+- 글꼴은 PC에 설치된 것을 쓴다: 본문 Noto Sans KR, 코드 D2Coding, 표지 큰 글자 Cascadia Code. 새 PC에서 처음 빌드하면 PDF에 들어간 글꼴을 확인한다 (pymupdf의 `page.get_fonts()`). `D2Coding`이 없고 `GulimChe`가 보이면 브라우저가 D2Coding을 못 찾은 것이다. "사용자 전용"으로 설치된 글꼴은 headless Chrome·Edge에 보이지 않는다 (2026-11-16 회사 PC에서 확인). 그 상태에서는 코드 글꼴이 더 넓은 Cascadia Mono로 바뀌어 코드 블록의 긴 줄이 오른쪽에서 잘리므로, 그렇게 나온 PDF는 건네지 않는다. 고치는 방법은 둘이다. (1) D2Coding을 "모든 사용자용"으로 설치한다. (2) `Docs/Handouts/_build/fonts/`에 `D2Coding-400.ttf`, `D2Coding-700.ttf`를 둔다. `common.py`의 `build()`가 이 폴더의 `<글꼴 이름>-<굵기>.ttf`를 HTML에 넣어 준다 (폴더가 없으면 아무 일도 하지 않는다). 글꼴 묶음(`.ttc`)에서 낱개 파일을 꺼낼 때는 venv에 `fonttools`를 설치해 `TTCollection(경로).fonts[i].save(...)`를 쓴다. `_build/`는 저장소에 올라가지 않으므로 PC마다 한 번 해 둔다. 회사 PC는 (2)로 맞춰 두었다.
 
 ## 번호와 버전
 
@@ -36,7 +36,8 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
 - 자료 안의 장·절은 점으로 잇는다 ("3장", "3.2절"). 강 번호와 섞이지 않게 강에는 늘 "강"을 붙인다.
 - 모든 PDF 이름은 `_v<N>`으로 끝난다. 표지 눈썹과 꼬리말에도 버전을 적는다.
   - 만드는 도중(검수하며 다시 빌드)에는 같은 버전 파일을 덮어쓴다.
-  - Claud에게 한 번 건넨 PDF는 덮어쓰지 않는다. 그 뒤에 고치면 버전을 올린다: 강의 자료는 `curriculum.py`의 그 강 `ver`, 계획서는 `PLAN_VERSION`(과 `PLAN_DATE`). 예전 버전 파일은 지우지 않고 둔다.
+  - Claud에게 한 번 건넨 PDF는 덮어쓰지 않는다. 그 뒤에 고치면 버전을 올린다: 강의 자료는 `curriculum.py`의 그 강 `ver`, 계획서는 `PLAN_VERSION`(과 `PLAN_DATE`). 예전 버전 파일은 지우지 않는다.
+  - **예전 버전은 `Docs/Handouts/Legacy/`로 옮긴다** (Claud가 2026-11-16에 정했다: "이전 버전은 같은 폴더 안에 Legacy 폴더 만들고 거기에 넣어두고 관리하자"). `Docs/Handouts/` 바로 아래에는 강마다 최신 버전 하나와 최신 계획서 하나만 둔다. 새 버전을 Claud에게 건넬 때 바로 앞 버전을 `Legacy/`로 옮긴다. git이 추적하는 파일이면 `git mv`로 옮겨서 이력이 이어지게 한다. 2026-11-16에 그때까지의 예전 판 14개를 옮겼다. 본문에서 예전 버전을 가리킬 때는 `Legacy/ClaudGL_1-2_GameLoop_v2.pdf`처럼 폴더까지 적는다.
   - 빌드가 "is open in a viewer"로 멈추면 그 버전은 이미 건넨 것이다. 버전을 올리고 다시 빌드한다.
 
 ## 공통 규칙
@@ -49,6 +50,13 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
   - `tag="bad"` 안티패턴 — 왜 곤란한지 보여 주는 짧은 예
   - 설계에서 갈리는 지점은 선택지와 장단점 표로 보여 주고 `box("decide", …)`로 Claud에게 남긴다. 고르지 않는다.
   - 해설 장에는 질문의 답과 근거만 쓴다. 미션의 완성 코드는 Claud가 명시적으로 요청할 때만 채팅으로 준다.
+- **대학 강의처럼 자세히 쓴다.** Claud가 2026-11-16에 정했다 ("실제 대학 강의처럼 설명이 좀 자세히, 특히 함수 설명이 제대로 되어있으면 좋겠어. 예시도 좀 넣고. 그림 자료도 넣을 수 있으면 좋아. 특히 나중에 트랜스레이션 같은거 설명할 때"). 견본은 `lesson_1_1.py`(v3)다.
+  - 함수 설명: 그 강에서 처음 쓰는 라이브러리 함수(GLFW, GLAD, OpenGL, 표준 라이브러리)는 `fn()` 카드로 하나씩 설명한다. 헤더에 적힌 선언 그대로, 인자마다의 뜻, 돌려주는 값, 실패하는 경우, 부르는 순서, 선언된 곳(`파일:줄`)을 적는다. 선언과 줄 번호는 저장소의 헤더(`include/`)에서 직접 확인한다. 남이 만든 함수의 사용법을 적는 것이지 미션의 답이 아니다. 카드에는 그 함수가 무엇을 요구하고 무엇을 주는지만 쓰고, 엔진 코드의 어디에서 부르는지는 쓰지 않는다. 호출 순서는 카드의 "부르는 순서" 칸을 Claud가 스스로 이어서 찾게 한다.
+  - 예시: 개념이나 함수마다 `box("ex", …)`로 구체적인 숫자나 호출 하나를 보여 준다. 미션에서 쓸 값과는 다른 값을 쓴다 (엔진이 4.6을 요청하면 예시는 3.3).
+  - 그림: 관계와 구조는 글보다 그림으로 먼저 보여 준다. 상자와 화살표로 되는 것은 `flow`·`layers`로, 그것으로 안 되는 것(메모리 배치, 갈래가 있는 흐름, 화면 모습, 좌표계, 벡터, 변환)은 `Fig`로 그린다. 변환과 좌표 공간을 다루는 강(2-6, 4-1, 4-2)은 단계마다 그림을 넣는다. 축이나 벡터처럼 `Fig`에 부품이 더 필요하면 `common.py`에 메서드를 더하고 `gallery.py`에 견본을 넣는다.
+  - 설명은 "무엇을 한다"에서 멈추지 않고 "왜 그 자리인가, 하지 않으면 무슨 일이 생기는가"까지 쓴다.
+- **1차 코드를 인용하지 않는다.** 2026-11-16의 재시작 뒤로 저장소에는 엔진 코드가 없고, 1차 코드(태그 `first-pass-2026-04`)는 앞 강 미션의 답이다. 앞 강에서 Claud가 쓸 코드를 말해야 할 때는 인용 대신 "네 코드에서 확인할 것" 표(확인할 것 | 볼 자리 | 왜 문제인가)로 쓰고, 미션의 첫 단계에서 자기 코드를 읽게 한다. `tag="now"`는 지금 저장소에 실제로 있는 파일(프로젝트 설정, `framework.h`, pch, `include/`의 라이브러리 헤더)에만 쓴다. 클래스와 함수의 이름·선언은 1차 코드와 같게 유지하고 선언 스케치로만 보여 준다. 선언은 `git show first-pass-2026-04:<파일>`로 확인한다.
+- 장·절 번호는 다른 강의 자료가 가리키고 있다 (예: 1-6강이 "1-5강 5.2절", "1-4강 6.4절"을 가리킨다). 이미 나간 자료를 고칠 때는 기존 장·절 번호와 미션 단계 번호가 뜻하는 내용을 바꾸지 않는다. 더할 것은 그 절 안에 넣거나 장 끝에 새 절로 붙인다.
 - 코드 안 주석은 영어만 쓴다. build()가 코드 블록의 한글을 `issues`로 잡는다.
 - 문체: 본문은 한다체("~다", "~한다"). 미션·질문의 지시는 하시오체("답하시오"). 채팅 답변은 사용자 `CLAUDE.md`를 따른다 (표는 영문만 쓰고 아래에 한글 설명, 리눅스 명령어에는 해설).
 - 정확성: 현재 코드를 말할 때는 그 파일을 실제로 읽고 `파일:줄 번호`로 적는다. 기억이나 `CLAUDE.md`의 설명만으로 쓰지 않는다. 읽은 날짜를 본문에 적는다. API 동작은 확실한 것만 단정하고, 버전에 따라 다른 것은 버전을 적는다.
@@ -61,7 +69,7 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
 
 1. 표지 — `cover(눈썹, 큰 식별자, 강 이름, 부제, 정보 표, note, toc)`. 큰 식별자는 그 강의 핵심 클래스·함수 이름(`Raw('G<span class="ac">Logger</span>')`처럼 일부를 강조). 정보 표 = 목표 결과물 / 핵심 개념 / 선수 지식 / 예상 시간 / 건드릴 파일. 눈썹은 `CLAUDGL ENGINE · PART 1 · 1-5 · v1`.
 2. 왜 필요한가 — 이 강이 없으면 무엇이 불편한지. 지금 코드에서 그 불편이 드러나는 줄(`tag="now"`).
-3. 개념 장 3〜5개 — 소절, 그림(`flow`·`layers`·`iface`), 비교 표, 상자, 맞는 것·틀린 것은 `ox()`
+3. 개념 장 3〜6개 — 소절, 그림(`flow`·`layers`·`iface`·`Fig`), 함수 설명(`fn`), 예시(`box("ex")`), 비교 표, 상자, 맞는 것·틀린 것은 `ox()`
 4. 설계 — 선언 스케치, 파일 배치(`tree`), 선택지 표 + `box("decide")`
 5. 구현 미션 — `steps()`. 단계마다 힌트를 가벼운 것 → 구체적인 것 순으로. 힌트는 방향이지 코드가 아니다.
 6. 흔한 함정 — 표: 증상 | 원인 | 확인 방법
@@ -72,7 +80,9 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
 
 ## 코드가 먼저 있는 강 (이미 만든 코드를 다시 읽는 자료)
 
-1-1 〜 1-3강은 Claud가 코드를 먼저 쓰고 자료가 나중에 나왔다. 이런 강의 자료는 미션 대신 저장소의 코드를 인용해서 읽는다. Claud가 "지난 것 복습하게 자료로 뽑아 줘"라고 할 때도 이 양식으로 그 강의 자료를 만든다. 번호는 다른 강과 똑같이 `Part-순서`다. 견본은 `lesson_1_3.py`.
+Claud가 "지난 것 복습하게 자료로 뽑아 줘"라고 할 때만 쓰는 양식이다. 미션 대신 저장소의 코드를 인용해서 읽는다. 번호는 다른 강과 똑같이 `Part-순서`다. 지금 이 양식으로 된 강 파일은 없다. 견본이 필요하면 `git show bd3260b:Docs/Handouts/src/lesson_1_3.py`로 예전 판을 본다.
+
+1-1 〜 1-3강의 예전 판이 이 양식으로 나왔다 (코드가 먼저 있었다). 2026-11-16에 코드를 지우고 처음부터 다시 시작하면서 이 양식은 맞지 않게 됐다. Claud의 말: "지금 1-1~1-3 은 내 코드 리뷰인거야? 나 첨부터 하는거잖아 지금." 그래서 같은 날 세 강을 미션이 있는 보통 양식으로 다시 썼다 (1-1 v3, 1-2 v3, 1-3 v4). 1-4 〜 1-6강도 1차 코드 인용을 빼고 함수 설명·예시·그림을 넣어 v2로 올렸다. 클래스와 함수의 이름·선언은 1차 코드(태그 `first-pass-2026-04`)와 같게 잡아 여섯 강이 서로 이어진다. 예전 판은 `Legacy/`에 있고, 1-1 〜 1-3강의 예전 판(1-1 v2, 1-2 v2, 1-3 v3)은 미션을 끝낸 뒤에 읽는 해설로 쓴다.
 
 - 이미 Claud가 쓴 코드이므로 `tag="now"`로 그대로 인용한다. `start=<실제 줄 번호>`를 줘서 줄 번호를 표시하고, 본문은 그 번호로 설명한다. 인용은 글자 하나 바꾸지 않는다 (`r"""…"""` raw 문자열).
 - 구성: 표지(정보 표 = 다루는 범위 / 핵심 개념 / 관련 파일 / 읽는 시간 / 코드 기준 커밋과 읽은 날짜) → 한 장으로 보기(그림) → 개념 장(인용 코드 + 줄별 표 + 상자) → 다시 보면 걸리는 곳(위치 | 관찰 | 이어지는 강) → 스스로 설명해 보기(질문 6개) → 해설 → 용어집.
@@ -87,7 +97,7 @@ Claud가 2026-11-14에 정한 규칙이다 ("강의별로 넘버링 제대로 �
 2. 그 강이 건드릴 엔진 파일을 전부 읽는다. 현재 상태·문제 위치를 `파일:줄`로 메모한다. 앞 강의 완료 기준이 실제로 충족됐는지도 본다. 안 됐으면 자료를 만들기 전에 Claud에게 알린다.
 3. `curriculum.py`에서 그 강의 `slug`를 정하고 `ver=1`로 둔다. `lesson_<Part>_<순서>.py`를 쓴다. 내용만 쓴다: `COVER`, `ch1`…, 맨 아래 `build()` + `render()`. 머리 부분(경로 설정, import)은 최근 강 파일과 같다. 강 제목·번호·버전은 `ME = lesson("1-5")`에서, 출력 경로는 `handout_name(ME["id"])`에서 가져온다.
     - 텍스트 인자는 자동으로 이스케이프되고 인라인 표기를 받는다: `` `코드` ``, `**굵게**`, `==강조==`. C++의 `<`, `>`를 그대로 써도 된다. HTML을 직접 넣을 때만 `Raw(...)`.
-    - 헬퍼: `chapter(n, title, body, lead, pb, side)`(제목·도입문·첫 블록을 한 덩어리로 묶음), `h3(num, t)`, `h4`, `p`, `ul`, `ol`, `table(cols%, header, rows, cell_cls, sum_row, compact)`(rows에 `Group("제목")`을 넣으면 묶음 제목 줄), `box(kind, title, body)`(point / why / ue / cs / api / warn / hint / decide / dark, title이 None이면 기본 이름), `cards`, `ox(good, bad)`, `code(src, lang, title, tag, hl, start)`(`start`를 주면 실제 줄 번호가 왼쪽에 붙는다), `console(text, title)`(Raw에 `dim`/`ok`/`warn`/`err` span), `tree(text)`(줄 끝 ` +` = 새 파일, `  #` 뒤 = 설명), `flow(items, caption)`, `layers(rows, caption)`, `iface(name, members, stereotype, note)` + `grid(items, cols)`, `roadmap`, `steps`, `checklist`, `exgroup`, `qlist`, `answers`, `glossary_chapter`, `st(kind)`, `keep(...)`, `pagebreak()`.
+    - 헬퍼: `chapter(n, title, body, lead, pb, side)`(제목·도입문·첫 블록을 한 덩어리로 묶음), `h3(num, t)`, `h4`, `p`, `ul`, `ol`, `table(cols%, header, rows, cell_cls, sum_row, compact)`(rows에 `Group("제목")`을 넣으면 묶음 제목 줄), `box(kind, title, body)`(point / why / ue / cs / api / warn / hint / decide / dark / ex, title이 None이면 기본 이름. `ex`는 예시이고 body에 블록 목록을 줄 수 있다), `fn(name, signature, summary, params, returns, fails, notes, lib)`(함수 설명 카드), `Fig(height).box(…).arrow(…).text(…).line(…).render(caption)`(좌표로 그리는 그림. 폭 660 기준, 글자 크기 11.5가 본문과 비슷하다), `cards`, `ox(good, bad)`, `code(src, lang, title, tag, hl, start)`(`start`를 주면 실제 줄 번호가 왼쪽에 붙는다), `console(text, title)`(Raw에 `dim`/`ok`/`warn`/`err` span), `tree(text)`(줄 끝 ` +` = 새 파일, `  #` 뒤 = 설명), `flow(items, caption)`, `layers(rows, caption)`, `iface(name, members, stereotype, note)` + `grid(items, cols)`, `roadmap`, `steps`, `checklist`, `exgroup`, `qlist`, `answers`, `glossary_chapter`, `st(kind)`, `keep(...)`, `pagebreak()`.
     - 쪽 나눔: 표지는 1쪽(쪽 번호 없음). 장은 기본으로 이어 흐르고, 새 쪽에서 시작할 장만 `pb=True` (구현 미션, 질문, 해설은 새 쪽).
 4. 빌드 (저장소 루트에서):
    `Docs\Handouts\.venv\Scripts\python.exe -I Docs\Handouts\src\lesson_1_5.py`

@@ -24,7 +24,7 @@ interface (virtual renderer interfaces, backend selection) in this course.
 
 Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single source is
 `Docs/Handouts/src/curriculum.py`; the full plan is `Docs/Handouts/ClaudGL_00_Plan_v<N>.pdf`
-(highest N is current). If the lesson list changes, update curriculum.py first, then this section.
+(the one in `Docs/Handouts/` is current; older ones are in `Legacy/`). If the lesson list changes, update curriculum.py first, then this section.
 
 ### Part 1: Core (API-agnostic)
 - [ ] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
@@ -77,12 +77,20 @@ Restarted on 2026-11-16 from a libraries-only baseline: project settings, `inclu
 plus a Logger skeleton, written 2026-04) is kept at tag `first-pass-2026-04` as an answer key:
 `git diff first-pass-2026-04 -- <file>`.
 
-- [ ] 1-1 Project setup, window creation, GEngine singleton (retype from the handout)
-- [ ] 1-2 Game Loop + Delta Time
-- [ ] 1-3 Input System (the EKey list in `InputKeys.h` is kept, not retyped)
-- [ ] 1-4 Init failure and shutdown handling
-- [ ] 1-5 Logger
-- [ ] **Next**: 1-1. Retype 1-1 to 1-3 as the handouts describe; no redesign before 1-4.
+Handouts for 1-1 to 1-6 were all rewritten on 2026-11-16 in one format: from scratch with missions,
+function reference cards, worked examples and figures, and no quotes of the first-pass code.
+`Docs/Handouts/` holds only the newest version of each PDF; older versions are in `Docs/Handouts/Legacy/`.
+
+- [ ] 1-1 Project setup, window creation, GEngine singleton (handout v3)
+- [ ] 1-2 Game Loop + Delta Time (handout v3)
+- [ ] 1-3 Input System (handout v4; the EKey list in `InputKeys.h` is kept, not retyped)
+- [ ] 1-4 Init failure and shutdown handling (handout v2)
+- [ ] 1-5 Logger (handout v2; the logger is built from nothing, no skeleton is left in the repo)
+- [ ] 1-6 Assert and error policy (handout v2)
+- [ ] **Next**: 1-1 with handout v3. Keep the class and function names of the first pass so the later
+  handouts still match; write the bodies yourself. The old code-reading handouts in `Legacy/`
+  (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each lesson's missions.
+- The baseline C++ build has not been run since the restart; mission 1 of lesson 1-1 is that check.
 
 ## Notes
 - GLM works with all APIs (OpenGL, DX, Vulkan) - just change #defines
