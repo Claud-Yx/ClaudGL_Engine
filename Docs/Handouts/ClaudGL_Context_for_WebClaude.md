@@ -1,6 +1,7 @@
 # ClaudGL Engine — 웹 Claude용 맥락 문서
 
-작성일 2026-11-15, 2026-11-16에 1-4강 자료를 반영해 갱신. 코드 기준은 커밋 `7aa55c4`의 엔진 코드다 (그 뒤 커밋은 문서만 바꿨다).
+작성일 2026-11-15. 2026-11-16에 1-4강 자료, 계획서 v5, 코드 재시작을 반영해 갱신.
+6절에 옮겨 적은 코드는 커밋 `7aa55c4`(태그 `first-pass-2026-04`)의 1차 작성 코드다. 지금 작업 폴더에는 그 코드가 없다 (4절).
 
 이 문서는 Claude Code에서 진행하던 스터디를 웹 Claude(claude.ai)에서 이어 가기 위한 인수인계 문서다.
 웹 Claude는 저장소를 볼 수 없으므로, 필요한 규칙과 현재 코드 상태를 여기에 옮겨 적었다.
@@ -8,8 +9,9 @@
 
 ## 1. 무엇을 하는 프로젝트인가
 
-- 학습용 크로스 API 게임 엔진을 직접 만든다. OpenGL로 시작해 DirectX 11, DirectX 12, Vulkan 순서로 넓힌다.
-- 렌더러 백엔드만 갈아 끼울 수 있도록 추상화 계층을 제대로 세우는 것이 목표다.
+- 학습용 게임 엔진을 OpenGL 하나로 끝까지 직접 만든다. 조명·그림자·후처리가 있는 장면을 돌아다니는 것이 완성 기준이다.
+- `gl*` 호출은 렌더러 계층 안에만 둔다. 다만 백엔드를 갈아 끼우는 인터페이스(가상 함수, 백엔드 선택)는 이 강의에서 만들지 않는다.
+- DirectX 11, DirectX 12, Vulkan은 각각 독립된 후속 강의다. 여러 API를 덮는 인터페이스는 API를 각각 써 본 뒤 마지막에 만든다 (Claud가 2026-11-16에 정함).
 - 언어 C++20, 빌드 Visual Studio 2022 (MSVC v143), 라이브러리 GLFW 3.4 · GLAD · GLM.
 - 구성: `Engine/`(정적 라이브러리)과 `Client/`(실행 파일, 콘솔 서브시스템).
 - 저장소: https://github.com/Claud-Yx/ClaudGL_Engine
@@ -42,29 +44,33 @@
 
 Part 1 Core:
 1-1 프로젝트 구성과 창 / 1-2 Game Loop와 Delta Time / 1-3 Input System / 1-4 초기화 실패와 종료 처리 /
-1-5 Logger / 1-6 Assert와 오류 처리 정책 / 1-7 파일과 경로 / 1-8 Resource Manager
+1-5 Logger / 1-6 Assert와 오류 처리 정책 / 1-7 파일과 경로
 
-Part 2 날것의 OpenGL (일부러 추상화하지 않는 구간):
+Part 2 날것의 OpenGL (일부러 클래스로 감싸지 않는 구간):
 2-1 OpenGL이라는 상태 기계 / 2-2 첫 삼각형 / 2-3 인덱스 버퍼와 사각형 / 2-4 셰이더 다루기 / 2-5 텍스처 /
 2-6 변환과 좌표 공간
 
-Part 3 Renderer 추상화:
-3-1 추상화 설계 / 3-2 Window와 RenderDevice 분리 / 3-3 Buffer와 VertexLayout / 3-4 Shader와 Texture /
-3-5 OpenGL 백엔드 마무리와 검증 / 3-6 렌더 상태
+Part 3 Renderer 계층 (GL 객체를 쥐는 구체 클래스. 가상 함수 인터페이스는 만들지 않는다):
+3-1 Renderer 설계 / 3-2 Window와 RenderDevice 분리 / 3-3 Buffer와 VertexLayout / 3-4 Shader와 Texture /
+3-5 Resource Manager / 3-6 Renderer 마무리와 검증 / 3-7 렌더 상태
 
 Part 4 Scene:
 4-1 Transform과 계층 / 4-2 Camera / 4-3 Mesh / 4-4 Material / 4-5 Lighting / 4-6 Renderer 정리
 
 Part 5 Advanced:
-5-1 Framebuffer와 후처리 / 5-2 Shadow Mapping / 5-3 ImGui 통합 (선택) / 5-4 회고와 DX11 준비
+5-1 Framebuffer와 후처리 / 5-2 Shadow Mapping / 5-3 ImGui 통합 (선택) / 5-4 회고
 
-Part 6〜8 (DX11, DX12, Vulkan)은 5-4강 뒤에 상세화한다.
+이 강의는 5-4강에서 끝난다. 그 뒤는 독립된 강의로, 생각하는 순서는 애니메이션·사운드·물리(셋 사이의 순서는 미정)
+→ DX11 → DX12 → Vulkan → 통합 엔진이다. 강 구성은 그 강의를 시작할 때 따로 계획한다.
 
 ## 4. 지금 어디까지 왔는가
 
-- 1-1, 1-2, 1-3강: 코드 완료. 창이 뜨고, 루프가 돌고, A·S·D 키로 배경색이 바뀐다.
-- 1-4강 (초기화 실패와 종료 처리): 코드는 시작하지 않았다. 강의 자료는 2026-11-16에 나왔다.
-- 1-5강 (Logger): 진행 중. 뼈대만 있고 `Log()` 본문이 비어 있다. 강의 자료가 나와 있다.
+- 2026-11-16에 처음부터 다시 시작했다. 1차로 쓴 코드(1-1 〜 1-3강 완료, Logger 뼈대)는 7개월 전 것이라 Claud가
+  다시 쳐 보기로 했다. 작업 폴더에는 프로젝트 설정, `include/`, pch 파일, `Engine/Enum/InputKeys.h`만 남아 있고
+  `Client/main.cpp`는 빈 `main`이다.
+- 1차 코드는 태그 `first-pass-2026-04`에 그대로 있다. 다시 친 코드와 비교하는 답안지로 쓴다.
+- 지금 할 강은 1-1강이다. 1-1 〜 1-3강은 자료에 인용된 코드대로 다시 치고, 설계는 1-4강 전까지 바꾸지 않는다.
+- 1-4강 (초기화 실패와 종료 처리), 1-5강 (Logger)은 자료가 나와 있고 코드는 아직이다.
 - 1-4강과 1-5강 중 어느 것을 먼저 할지는 Claud가 정한다. 두 자료 모두 어느 순서로 해도 되게 썼다.
   1-4강 자료는 Logger가 아직 없으면 `std::cerr`로 실패 이유를 찍게 하고, 1-5강 자료는 엔진에 종료 경로가
   없다는 전제로 `GLogger::Shutdown()`을 부르는 자리를 임시로 둔다.
@@ -73,9 +79,10 @@ Part 6〜8 (DX11, DX12, Vulkan)은 5-4강 뒤에 상세화한다.
 
 파일 이름은 `ClaudGL_<강 번호>_<주제>_v<버전>.pdf`다. 한 번 나간 PDF를 고치면 버전을 올린다.
 
-- `ClaudGL_00_Plan_v4.pdf` — 전체 강의 계획서. 스터디를 시작할 때 보는 지침서라서 진행 상황은 들어 있지 않다.
+- `ClaudGL_00_Plan_v5.pdf` — 전체 강의 계획서. 스터디를 시작할 때 보는 지침서라서 진행 상황은 들어 있지 않다.
 - `ClaudGL_1-1_ProjectAndWindow_v2.pdf`, `ClaudGL_1-2_GameLoop_v2.pdf`, `ClaudGL_1-3_Input_v2.pdf`
-  — 이미 쓴 코드를 인용해서 다시 읽는 자료. 미션이 없다.
+  — 1차 코드를 인용해서 읽는 자료. 미션이 없다. 다시 칠 때는 이 인용이 따라 칠 원본이 된다.
+  1-3강 v2의 6장에 "1-8강 Resource Manager"라고 적힌 곳은 계획서 v5에서 3-5강이 됐다.
 - `ClaudGL_1-4_InitAndShutdown_v1.pdf`, `ClaudGL_1-5_Logger_v1.pdf` — 개념, 설계, 구현 미션이 있는 자료.
   완성 코드는 없다.
 
@@ -93,7 +100,10 @@ Part 6〜8 (DX11, DX12, Vulkan)은 5-4강 뒤에 상세화한다.
 웹 Claude에게: 강의 자료의 미션에 대한 완성 코드를 먼저 내놓지 않는다. 자료의 장·절 번호("5.2절")를
 그대로 가리키며 설명하면 Claud가 찾아보기 쉽다.
 
-## 6. 1-5강과 관련된 현재 코드
+## 6. 1-5강과 관련된 1차 코드
+
+아래는 태그 `first-pass-2026-04`의 코드다. 1-4강과 1-5강 자료가 가리키는 파일과 줄 번호도 이 코드 기준이다.
+Claud가 다시 친 코드는 줄 번호가 조금 다를 수 있으니, 줄 번호를 말할 때는 지금 코드를 붙여 달라고 한다.
 
 `Engine/Enum/LogLevel.h`
 
@@ -219,7 +229,7 @@ void GLogger::Log( ELogLevel log_level, std::string_view category, const char* f
 
 ## 9. 웹 Claude가 할 수 없는 것
 
-- 저장소를 직접 읽지 못한다. 6절의 코드는 2026-11-15 기준이다. Claud가 코드를 고친 뒤에는 바뀐 코드를
+- 저장소를 직접 읽지 못한다. 6절의 코드는 1차 코드이고 지금 작업 폴더에는 없다. Claud가 다시 친 코드를
   붙여 넣어 달라고 한다. 줄 번호도 그때의 코드 기준으로 다시 센다.
 - 강의 자료 PDF를 새로 만들거나 고치는 일은 Claude Code 쪽의 `claudgl-lesson-builder` 스킬이 한다.
   자료에서 틀린 곳이나 바꿀 곳을 찾으면 목록으로 정리해 주면, Claud가 Claude Code에 전달한다.
