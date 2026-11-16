@@ -92,7 +92,18 @@ Engine/
     ├── InputManager.h
     └── Example.h +  #this lesson adds it
 """),
-], lead="코드 블록은 네 가지 꼬리표로 쓰임을 밝힌다. 주석은 영어로 쓰고, 함수 본문 완성본은 싣지 않는다.")
+
+    h3("1.5", "함수 설명 — 남이 만든 함수의 사용법"),
+    fn("glfwWindowHint", "void glfwWindowHint( int hint, int value );",
+       "다음에 만들 창과 컨텍스트의 조건을 예약한다. 창을 만들 때 한꺼번에 적용된다.",
+       params=[("`hint`", "무엇을 정할지. `GLFW_CONTEXT_VERSION_MAJOR` 같은 상수"),
+               ("`value`", "그 항목의 값")],
+       returns="없다",
+       fails="모르는 `hint`를 주면 `GLFW_INVALID_ENUM` 오류가 난다. 값이 맞는지는 창을 만들 때 검사된다",
+       notes=[("부르는 순서", "`glfwInit()` 뒤, `glfwCreateWindow()` 앞")],
+       lib="GLFW 3.4"),
+], lead="코드 블록은 네 가지 꼬리표로 쓰임을 밝힌다. 주석은 영어로 쓰고, 함수 본문 완성본은 싣지 않는다. "
+        "라이브러리 함수는 함수 설명 카드로 인자와 반환값까지 적는다.")
 
 ch2 = chapter(2, "그림", [
     h3("2.1", "흐름"),
@@ -112,7 +123,19 @@ ch2 = chapter(2, "그림", [
         iface("IWindow", ["PollEvents() : void", "ShouldClose() : bool"],
               note="3-2강에서 Claud가 정한다. 여기는 이름만"),
     ]),
-], lead="그림은 HTML 부품으로 그린다. 한 그림에는 한 가지 관계만 담는다.", pb=True)
+    h3("2.4", "그린 그림"),
+    Fig(140)
+    .box(20, 24, 150, 50, "스택", "지역 변수")
+    .box(255, 24, 150, 50, "정적 저장 영역", "static 객체", kind="accent")
+    .box(490, 24, 150, 50, "힙", "new, malloc", kind="dark")
+    .arrow((170, 49), (255, 49), kind="accent")
+    .arrow((405, 49), (490, 49), kind="muted dash")
+    .text(212, 41, "참조", kind="s", size=9.5)
+    .text(447, 41, "포인터", kind="s", size=9.5)
+    .text(330, 112, "상자, 화살표, 글자를 좌표로 놓는다", kind="s")
+    .render("HTML 부품으로 만들 수 없는 그림은 `Fig`로 그린다. 메모리 배치, 좌표계, 벡터가 여기에 든다."),
+], lead="그림은 HTML 부품으로 만들고, 그것으로 안 되는 것만 `Fig`로 그린다. 한 그림에는 한 가지 관계만 담는다.",
+    pb=True)
 
 ch3 = chapter(3, "상자와 비교", [
     box("point", None, "이 절에서 하나만 기억한다면 이것이다. 한두 문장으로 쓴다."),
@@ -121,6 +144,13 @@ ch3 = chapter(3, "상자와 비교", [
     box("api", None, "DX11·DX12·Vulkan에서 달라지는 점. 추상화할 때 다시 본다."),
     box("warn", None, "증상부터 쓴다. “처음 몇 프레임 동안 누르지 않은 키가 눌린 것으로 나온다.”"),
     box("decide", None, "정답이 없는 지점. 선택지와 장단점을 표로 보여 주고 고르는 것은 Claud에게 남긴다."),
+    box("ex", "예시: 힌트 세 줄", [
+        p("개념을 구체적인 숫자나 호출 하나로 보여 준다. 미션의 답이 아니라 다른 상황의 예를 든다."),
+        code("""
+glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, 3 );   // ask for OpenGL 3.3 ...
+glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
+""", tag="usage"),
+    ]),
     ox(("배열을 선언과 동시에 0으로 채운다", "생성 방식이 바뀌어도 안전하다"),
        ("`make_unique`의 값 초기화에 기댄다", "스택에 만들면 쓰레기 값")),
     cards([

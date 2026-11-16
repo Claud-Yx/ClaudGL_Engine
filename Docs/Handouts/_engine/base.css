@@ -152,6 +152,9 @@ table.t tr.sum td { background: var(--beige) !important; font-weight: 700; color
 .box.dark .bt { color: #F0A898; }
 .box.dark b { color: #fff; }
 .box.dark code { background: #353B4A; color: #F3EFE6; }
+.box.ex { background: #fff; border: 1px solid var(--line); border-left: 2.6px solid var(--green); }
+.box.ex .bt { color: var(--green); }
+.box.ex .code, .box.ex .console { margin: 1.6mm 0 2mm; }
 
 /* ---------- code ---------- */
 
@@ -246,6 +249,51 @@ table.t tr.sum td { background: var(--beige) !important; font-weight: 700; color
 .ox .x .mk { color: var(--accent); }
 .ox .m { font-weight: 700; color: var(--ink); font-size: 9.2pt; }
 .ox .d { font-size: 8.2pt; color: var(--muted); }
+
+/* ---------- drawn figures (inline SVG) ---------- */
+
+.fig { margin: 2mm 0 2mm; break-inside: avoid; }
+.fig svg { display: block; width: 100%; height: auto; }
+.fig .bx { fill: var(--cream); stroke: var(--line); stroke-width: 1; }
+.fig .bx.accent { fill: var(--accent-soft); stroke: var(--accent); }
+.fig .bx.dark { fill: var(--ink); stroke: var(--ink); }
+.fig .bx.soft { fill: var(--beige); stroke: var(--line); }
+.fig .bx.ghost { fill: #fff; stroke: var(--rule); stroke-dasharray: 4 3; }
+.fig .bx.plain { fill: none; stroke: var(--rule); }
+.fig text { font-family: var(--sans); fill: var(--ink); }
+.fig text.t { font-weight: 700; }
+.fig text.s { fill: var(--muted); }
+.fig text.mono { font-family: var(--mono); }
+.fig text.accent { fill: var(--accent); font-weight: 700; }
+.fig text.light { fill: #fff; }
+.fig text.s.light { fill: #B9C0CE; }
+.fig .ln { fill: none; stroke: var(--ink); stroke-width: 1.2; }
+.fig .ln.accent { stroke: var(--accent); }
+.fig .ln.muted { stroke: var(--faint); }
+.fig .ln.dash { stroke-dasharray: 4 3; }
+.fig .ah { fill: var(--ink); }
+.fig .ah.accent { fill: var(--accent); }
+.fig .ah.muted { fill: var(--faint); }
+
+/* ---------- function reference cards ---------- */
+
+.fn { border: 1px solid var(--line); border-radius: 2mm; background: #fff; margin: 3mm 0 4mm; overflow: hidden; break-inside: avoid; }
+.fn .fh { display: flex; justify-content: space-between; align-items: baseline; background: var(--ink); color: #fff; padding: 1.5mm 3.8mm; }
+.fn .fh .nm { font-family: var(--mono); font-weight: 700; font-size: 9.6pt; }
+.fn .fh .lib { font-size: 7.2pt; font-weight: 700; letter-spacing: 0.12em; color: #B9C0CE; }
+.fn pre.sig {
+    margin: 0; padding: 2.2mm 3.8mm; background: var(--cream); border-bottom: 1px solid var(--line);
+    font-family: var(--mono); font-size: 8.4pt; line-height: 1.5; white-space: pre; overflow: hidden; color: var(--ink);
+}
+.fn pre.sig .kt { color: var(--blue); }
+.fn pre.sig .k, .fn pre.sig .kd, .fn pre.sig .kr { color: var(--accent); font-weight: 700; }
+.fn pre.sig .nf { color: #7A4E12; font-weight: 700; }
+.fn .fs { padding: 2.2mm 3.8mm 1.4mm; font-size: 9.2pt; color: var(--ink); }
+.fn table { width: 100%; border-collapse: collapse; font-size: 8.8pt; line-height: 1.55; }
+.fn td { padding: 1.3mm 3.8mm; border-top: 1px solid var(--line); vertical-align: top; }
+.fn td.pn, .fn td.pl { width: 26%; }
+.fn td.pl { font-weight: 700; color: var(--ink); }
+.fn tr.grp td { background: var(--beige); color: var(--accent); font-weight: 700; font-size: 7.4pt; letter-spacing: 0.1em; padding-top: 0.9mm; padding-bottom: 0.7mm; }
 
 /* ---------- roadmap ---------- */
 

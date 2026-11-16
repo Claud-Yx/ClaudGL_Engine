@@ -13,8 +13,11 @@ Raw, so helpers can be nested freely.
 """
 from __future__ import annotations
 
+import base64
 import html
+import math
 import re
+import sys
 from pathlib import Path
 
 from pygments import highlight
@@ -22,6 +25,11 @@ from pygments.formatters import HtmlFormatter
 from pygments.lexers import get_lexer_by_name
 
 ENGINE_DIR = Path(__file__).resolve().parent
+
+# A cp949 console cannot encode every character a build may print (e.g. a dash inside `issues`).
+# Replace what it cannot show instead of letting the print kill the build.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(errors="replace")
 
 # Limits used by the automatic checks reported from build().
 MAX_CODE_COLS = 104   # characters that fit in a full-width code block (about 110 do)
@@ -227,11 +235,16 @@ BOX_TITLES = {
     "hint": "힌트",
     "decide": "결정할 것",
     "dark": "읽는 법",
+    "ex": "예시",
 }
 
 
 def box(kind: str, title, body) -> Raw:
-    """Callout box. kind: point | why | ue | cs | api | warn | hint | decide | dark."""
+    """Callout box. kind: point | why | ue | cs | api | warn | hint | decide | dark | ex.
+
+    "ex" is a worked example: one concrete case with real numbers or a real
+    call, shown apart from the lesson's own code. body may be a list of blocks.
+    """
     label = T(title) if title else BOX_TITLES[kind]
     inner = J(body) if isinstance(body, (list, tuple)) else T(body)
     if not inner.lstrip().startswith(("<p", "<ul", "<ol", "<div", "<table")):
@@ -425,6 +438,135 @@ def roadmap(rows, total: float, caption=None) -> Raw:
     return Raw(f'<div class="keep"><div class="road">{"".join(out)}</div>{cap}</div>')
 
 
+class Fig:
+    """Drawn figure (inline SVG) for pictures the HTML helpers cannot make:
+    memory layouts, pipelines with branches, coordinate systems, geometry.
+
+    Coordinates are figure units. The figure is scaled to the text width, so
+    with the default width of 660 one unit is about 0.26 mm and a font size of
+    11.5 prints close to the body text. Every method returns self, so calls
+    can be chained; render() gives the block to put into a chapter.
+
+    kind (boxes): "" | accent | dark | soft | ghost | plain
+    kind (lines and arrows): "" | accent | muted, optionally with " dash"
+    kind (text): t (bold) | s (small, muted) | mono | accent | light
+    """
+
+    def __init__(self, height: float, width: float = 660):
+        self.w, self.h = width, height
+        self._items: list[str] = []
+
+    @staticmethod
+    def _cls(base: str, kind: str) -> str:
+        return f"{base} {kind}".strip()
+
+    def box(self, x, y, w, h, title=None, sub=None, kind: str = "", r: float = 6):
+        """Rounded rectangle with an optional centered title and smaller second line."""
+        self._items.append(
+            f'<rect class="{self._cls("bx", kind)}" x="{x}" y="{y}" width="{w}" height="{h}" rx="{r}"/>')
+        light = " light" if kind == "dark" else ""
+        cx = x + w / 2
+        if title and sub:
+            self.text(cx, y + h / 2 - 2.5, title, kind="t" + light)
+            self.text(cx, y + h / 2 + 11.5, sub, kind="s" + light, size=9.5)
+        elif title:
+            self.text(cx, y + h / 2 + 4, title, kind="t" + light)
+        return self
+
+    def text(self, x, y, s, kind: str = "", anchor: str = "middle", size: float = 11.5):
+        """One line of text. anchor: start | middle | end."""
+        self._items.append(
+            f'<text class="{kind}" x="{x}" y="{y}" text-anchor="{anchor}" font-size="{size}">{esc(s)}</text>')
+        return self
+
+    def line(self, *points, kind: str = ""):
+        """Polyline through (x, y) points."""
+        pts = " ".join(f"{px:.1f},{py:.1f}" for px, py in points)
+        self._items.append(f'<polyline class="{self._cls("ln", kind)}" points="{pts}"/>')
+        return self
+
+    def arrow(self, *points, kind: str = ""):
+        """Polyline through the points with an arrowhead at the last one."""
+        (x1, y1), (x2, y2) = points[-2], points[-1]
+        length = math.hypot(x2 - x1, y2 - y1) or 1.0
+        ux, uy = (x2 - x1) / length, (y2 - y1) / length
+        size = 7.0
+        bx, by = x2 - ux * size, y2 - uy * size
+        self.line(*points[:-1], (bx, by), kind=kind)
+        head = kind.replace(" dash", "").replace("dash", "").strip()
+        self._items.append(
+            f'<polygon class="{self._cls("ah", head)}" points="{x2:.1f},{y2:.1f} '
+            f'{bx - uy * size * 0.5:.1f},{by + ux * size * 0.5:.1f} '
+            f'{bx + uy * size * 0.5:.1f},{by - ux * size * 0.5:.1f}"/>')
+        return self
+
+    def dot(self, x, y, r: float = 3, kind: str = ""):
+        self._items.append(f'<circle class="{self._cls("ah", kind)}" cx="{x}" cy="{y}" r="{r}"/>')
+        return self
+
+    def raw(self, svg: str):
+        """Escape hatch: append ready-made SVG markup."""
+        self._items.append(svg)
+        return self
+
+    def render(self, caption=None) -> Raw:
+        _stats["diagrams"] += 1
+        svg = (f'<svg viewBox="0 0 {self.w} {self.h}" xmlns="http://www.w3.org/2000/svg" role="img">'
+               + "".join(self._items) + "</svg>")
+        cap = f'<p class="cap">{T(caption)}</p>' if caption else ""
+        return Raw(f'<div class="fig">{svg}{cap}</div>')
+
+
+# --------------------------------------------------------------------------
+# function reference
+# --------------------------------------------------------------------------
+
+MAX_SIG_COLS = 100    # characters that fit in the signature line of a function card
+
+
+def fn(name: str, signature: str, summary, params=None, returns=None, fails=None, notes=None,
+       lib: str = "") -> Raw:
+    """Function reference card: what a library function does and how to call it.
+
+    signature -- the declaration as written in the library header (may span lines)
+    summary   -- one or two sentences: what the call does
+    params    -- [(parameter name(s), meaning), ...]; names take inline markup
+    returns   -- what comes back
+    fails     -- how a failure shows up and when it happens
+    notes     -- [(label, text), ...] extra rows such as ("부르는 순서", "...")
+    lib       -- where it comes from, shown at the top right ("GLFW 3.4", "OpenGL")
+
+    A card documents someone else's API. It says what the function needs and
+    gives, never where the lesson's own code should call it.
+    """
+    sig = signature.strip("\n")
+    if _HANGUL.search(sig):
+        _issues.append(f"hangul in signature: {name}")
+    longest = max(len(line) for line in sig.split("\n"))
+    if longest > MAX_SIG_COLS:
+        _issues.append(f"signature line too long ({longest} cols): {name}")
+    sig_html = highlight(sig, get_lexer_by_name("cpp"), HtmlFormatter(nowrap=True)).rstrip("\n")
+
+    rows = []
+    if params:
+        rows.append('<tr class="grp"><td colspan="2">인자</td></tr>')
+        rows += [f'<tr><td class="pn">{T(pname)}</td><td>{T(meaning)}</td></tr>' for pname, meaning in params]
+    extra = []
+    if returns:
+        extra.append(("돌려주는 값", returns))
+    if fails:
+        extra.append(("실패하면", fails))
+    extra += list(notes or [])
+    rows += [f'<tr><td class="pl">{T(label)}</td><td>{T(text)}</td></tr>' for label, text in extra]
+
+    lib_html = f'<span class="lib">{esc(lib)}</span>' if lib else ""
+    table_html = f'<table>{"".join(rows)}</table>' if rows else ""
+    return Raw(
+        f'<div class="fn"><div class="fh"><span class="nm">{esc(name)}</span>{lib_html}</div>'
+        f'<pre class="sig">{sig_html}</pre><div class="fs">{T(summary)}</div>{table_html}</div>'
+    )
+
+
 # --------------------------------------------------------------------------
 # missions, checks, questions
 # --------------------------------------------------------------------------
@@ -515,6 +657,35 @@ _PAGE_CSS = """
 """
 
 
+_FONT_FILE = re.compile(r"^(?P<family>.+)-(?P<weight>\d{3})\.(?P<ext>ttf|otf)$", re.IGNORECASE)
+
+
+def _local_fonts_css() -> str:
+    """@font-face rules for font files placed in _build/fonts (optional).
+
+    Headless Chrome and Edge cannot see a font that is installed "for the
+    current user only". On such a PC, put <Family>-<weight>.ttf files (for
+    example D2Coding-400.ttf and D2Coding-700.ttf) into Docs/Handouts/_build/fonts
+    and they are embedded as data URLs. Without that folder this returns "".
+    """
+    folder = ENGINE_DIR.parent / "_build" / "fonts"
+    if not folder.is_dir():
+        return ""
+    rules = []
+    for path in sorted(folder.iterdir()):
+        m = _FONT_FILE.match(path.name)
+        if not m:
+            continue
+        ext = m["ext"].lower()
+        data = base64.b64encode(path.read_bytes()).decode("ascii")
+        kind = "opentype" if ext == "otf" else "truetype"
+        rules.append(
+            f'@font-face {{ font-family: "{m["family"]}"; font-weight: {m["weight"]}; '
+            f'src: url(data:font/{ext};base64,{data}) format("{kind}"); }}'
+        )
+    return "\n".join(rules)
+
+
 def build(meta: dict, cover_html: str, sections, out_html) -> dict:
     """Write the HTML file and return check results.
 
@@ -530,7 +701,7 @@ def build(meta: dict, cover_html: str, sections, out_html) -> dict:
     doc = (
         '<!doctype html>\n<html lang="ko"><head><meta charset="utf-8">'
         f"<title>{esc(meta['title'])}</title>"
-        f"<style>{page_css}{css}</style></head><body>\n"
+        f"<style>{page_css}{_local_fonts_css()}{css}</style></head><body>\n"
         f"{cover_html}\n{J(*sections)}\n</body></html>\n"
     )
     out_path = Path(out_html)
