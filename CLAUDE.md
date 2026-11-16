@@ -24,9 +24,9 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 (highest N is current). If the lesson list changes, update curriculum.py first, then this section.
 
 ### Part 1: Core (API-agnostic)
-- [x] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
-- [x] 1-2 Game Loop + Delta Time (Run, Update callback)
-- [x] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
+- [ ] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
+- [ ] 1-2 Game Loop + Delta Time (Run, Update callback)
+- [ ] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
 - [ ] 1-4 Init failure and shutdown handling
 - [ ] 1-5 Logger (Debug logging)
 - [ ] 1-6 Assert and error handling policy
@@ -67,12 +67,17 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 - Overview only. Detailed lessons are planned after 5-4.
 
 ## Current Status
-- [x] 1-1 Project setup, window creation, GEngine singleton (basic structure)
-- [x] 1-2 Game Loop + Delta Time (Run, Update callback, static_cast float)
-- [x] 1-3 Input System (MInputManager, EKey, GLFW callback, IsKeyPressed/Held/Released)
-- [ ] 1-4 Init failure and shutdown handling (not started)
-- [ ] 1-5 Logger (in progress: skeleton exists, `Log()` body is empty)
-- [ ] **Next**: 1-4, then finish 1-5 Logger
+Restarted on 2026-11-16 from a libraries-only baseline: project settings, `include/`, pch files and
+`Engine/Enum/InputKeys.h` are kept; `Client/main.cpp` is an empty `main`. The first pass (1-1 to 1-3
+plus a Logger skeleton, written 2026-04) is kept at tag `first-pass-2026-04` as an answer key:
+`git diff first-pass-2026-04 -- <file>`.
+
+- [ ] 1-1 Project setup, window creation, GEngine singleton (retype from the handout)
+- [ ] 1-2 Game Loop + Delta Time
+- [ ] 1-3 Input System (the EKey list in `InputKeys.h` is kept, not retyped)
+- [ ] 1-4 Init failure and shutdown handling
+- [ ] 1-5 Logger
+- [ ] **Next**: 1-1. Retype 1-1 to 1-3 as the handouts describe; no redesign before 1-4.
 
 ## Notes
 - GLM works with all APIs (OpenGL, DX, Vulkan) - just change #defines
