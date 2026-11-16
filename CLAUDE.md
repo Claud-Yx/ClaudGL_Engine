@@ -8,8 +8,11 @@
 - Only show code when explicitly requested
 
 ## Project Goal
-Build a cross-API game engine starting with OpenGL, then DirectX 11, DirectX 12, and Vulkan.
-Focus on proper architecture with abstraction layers so only the renderer backend needs to change.
+Build one small game engine on OpenGL, start to finish: a lit, shadowed, post-processed scene you can
+fly through, with every `gl*` call kept inside the renderer layer.
+Other graphics APIs (DirectX 11, DirectX 12, Vulkan) are separate follow-up courses. A cross-API
+interface is built only after each API has been used on its own, so do not add a backend-swapping
+interface (virtual renderer interfaces, backend selection) in this course.
 
 ## Tech Stack
 - **Language**: C++20
@@ -31,9 +34,8 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 - [ ] 1-5 Logger (Debug logging)
 - [ ] 1-6 Assert and error handling policy
 - [ ] 1-7 Files and paths
-- [ ] 1-8 Resource Manager (File loading + caching)
 
-### Part 2: Raw OpenGL (written directly, no abstraction yet)
+### Part 2: Raw OpenGL (written directly, not wrapped yet)
 - [ ] 2-1 OpenGL as a state machine (context, bind model, debug callback)
 - [ ] 2-2 First triangle (VBO, VAO, shader compile/link)
 - [ ] 2-3 Index buffer and quad
@@ -41,13 +43,14 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 - [ ] 2-5 Textures
 - [ ] 2-6 Transforms and coordinate spaces (MVP, depth test)
 
-### Part 3: Renderer Abstraction
-- [ ] 3-1 Abstraction design (no code)
+### Part 3: Renderer Layer (concrete GL wrapper classes, no backend interface)
+- [ ] 3-1 Renderer design (no code)
 - [ ] 3-2 Window / RenderDevice split
 - [ ] 3-3 Buffer and VertexLayout
-- [ ] 3-4 Shader and Texture interfaces
-- [ ] 3-5 OpenGL backend wrap-up and validation (no `gl*` outside the backend)
-- [ ] 3-6 Render state
+- [ ] 3-4 Shader and Texture classes
+- [ ] 3-5 Resource Manager (file loading + caching, wired to Shader/Texture)
+- [ ] 3-6 Renderer wrap-up and validation (no `gl*` outside the renderer)
+- [ ] 3-7 Render state
 
 ### Part 4: Scene
 - [ ] 4-1 Transform / Hierarchy
@@ -61,10 +64,12 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 - [ ] 5-1 Framebuffer / Post-processing
 - [ ] 5-2 Shadow mapping
 - [ ] 5-3 (Optional) ImGui integration
-- [ ] 5-4 Retrospective and DX11 prep
+- [ ] 5-4 Retrospective
 
-### Part 6-8: DX11, DX12, Vulkan
-- Overview only. Detailed lessons are planned after 5-4.
+### After this course (separate courses, not Parts)
+- This course ends at 5-4. Each follow-up is planned when it starts; the plan lists them in chapter 9.
+- Intended order: Animation, Sound, Physics (order among these three not decided), then DX11, DX12,
+  Vulkan (each written raw first, with its own renderer), and last a unified engine with a cross-API interface.
 
 ## Current Status
 Restarted on 2026-11-16 from a libraries-only baseline: project settings, `include/`, pch files and

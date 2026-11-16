@@ -28,19 +28,36 @@ from __future__ import annotations
 
 PROJECT = "ClaudGL Engine"
 
-PLAN_VERSION = 4
-PLAN_DATE = "2026-11-14"
+PLAN_VERSION = 5
+PLAN_DATE = "2026-11-16"
 
 PARTS = {
     1: ("Core", "엔진의 뼈대"),
-    2: ("날것의 OpenGL", "추상화 전에 직접 써 보기"),
-    3: ("Renderer 추상화", "GL을 한 곳에 가두기"),
+    2: ("날것의 OpenGL", "감싸기 전에 직접 써 보기"),
+    3: ("Renderer 계층", "GL을 한 곳에 가두기"),
     4: ("Scene", "장면을 이루는 것들"),
     5: ("Advanced", "프레임버퍼·그림자·도구"),
 }
 
-# Later APIs: overview only in the plan, no lessons yet.
-LATER_PARTS = {6: "DX11", 7: "DX12", 8: "Vulkan"}
+# Courses that may follow this one. Each is a separate course, planned when it
+# starts; the plan only lists them (chapter 9), in the intended order.
+# Fields: name, what is new, what it takes from this course.
+NEXT_COURSES = [
+    ("애니메이션", "모델 임포트(glTF·FBX), 스켈레톤, 키프레임 보간, 스키닝",
+     "4-1강의 Transform 계층, 4-3강의 Mesh, 4-4강의 Material"),
+    ("사운드", "오디오 장치와 믹싱, 파일 디코딩, 3D 위치 음향",
+     "1-7강의 파일 읽기, 3-5강의 리소스 캐시, 4-2강의 카메라 위치"),
+    ("물리", "충돌 검출, 강체 시뮬레이션, 고정 시간 간격",
+     "1-2강의 루프와 델타 타임, 4-1강의 Transform"),
+    ("DX11", "Device와 Context, DXGI 스왑 체인, HLSL, 입력 레이아웃, 상태 객체",
+     "Part 1의 Core. 렌더러는 그 API로 날것부터 다시 쓴다"),
+    ("DX12", "커맨드 리스트와 큐, 디스크립터 힙, 루트 시그니처, PSO, 리소스 상태 전이, 펜스",
+     "DX11과 같다"),
+    ("Vulkan", "인스턴스·디바이스·큐, 스왑 체인, 파이프라인, 디스크립터 셋, 동기화, SPIR-V",
+     "DX11과 같다"),
+    ("통합 엔진", "여러 API를 덮는 렌더러 인터페이스, 백엔드 선택",
+     "강의마다 만든 API별 렌더러, 5-4강의 회고 문서"),
+]
 
 
 def L(part, title, concepts, result, hours, slug=None, ver=0, opt=False):
@@ -61,7 +78,7 @@ LESSONS = [
     L(1, "Input System",
       "`EKey`, 이벤트를 상태로 바꾸기, 키 콜백과 user pointer, Pressed·Held·Released",
       "키를 누르면 배경색이 바뀐다",
-      3, slug="Input", ver=2),
+      3, slug="Input", ver=3),
     L(1, "초기화 실패와 종료 처리",
       "초기화 실패 처리, 종료 경로, 값 초기화, 자원의 주인",
       "`Init`이 실패하면 원인이 보고되고, 창을 닫으면 GLFW 자원이 해제된다",
@@ -78,10 +95,6 @@ LESSONS = [
       "작업 디렉터리, `std::filesystem`, 텍스트·바이너리 읽기",
       "어디서 실행하든 `Assets/` 아래 파일을 찾아 읽는다",
       3),
-    L(1, "Resource Manager",
-      "핸들과 포인터, 캐시(`unordered_map`), 수명(`shared_ptr`·`weak_ptr`)",
-      "같은 경로를 두 번 요청해도 파일은 한 번만 읽는다",
-      5),
 
     # ---- Part 2: raw OpenGL ----
     L(2, "OpenGL이라는 상태 기계",
@@ -109,10 +122,10 @@ LESSONS = [
       "회전하는 큐브",
       5),
 
-    # ---- Part 3: renderer abstraction ----
-    L(3, "추상화 설계",
-      "Part 2에서 쓴 GL 호출 목록, 감출 것과 드러낼 것, 가상 함수와 컴파일 타임 선택, 핸들",
-      "인터페이스 초안 문서 (코드 없음)",
+    # ---- Part 3: renderer layer (concrete GL wrapper classes, no backend interface) ----
+    L(3, "Renderer 설계",
+      "Part 2의 GL 호출 목록, 감출 것과 드러낼 것, GL 객체의 주인(RAII)",
+      "클래스 초안 문서 (코드 없음)",
       4),
     L(3, "Window와 RenderDevice 분리",
       "`GEngine`에서 GLFW·GL 떼어 내기, 프레임 시작과 끝, 공개 헤더 정리",
@@ -120,14 +133,18 @@ LESSONS = [
       5),
     L(3, "Buffer와 VertexLayout",
       "버퍼 서술자, 정점 레이아웃 서술, 자원 수명",
-      "인터페이스로 만든 버퍼로 삼각형을 그린다",
+      "엔진 클래스로 만든 버퍼로 삼각형을 그린다",
       5),
     L(3, "Shader와 Texture",
-      "셰이더·텍스처 인터페이스, Resource Manager와 연결",
-      "텍스처 입힌 사각형이 인터페이스만으로 그려진다",
+      "셰이더·텍스처 클래스, 파일에서 만들기, 컴파일 오류 전달",
+      "텍스처 입힌 사각형이 엔진 클래스만으로 그려진다",
       5),
-    L(3, "OpenGL 백엔드 마무리와 검증",
-      "백엔드 폴더 격리, 생성 지점 한 곳, 검색으로 하는 검증",
+    L(3, "Resource Manager",
+      "핸들과 포인터, 캐시(`unordered_map`), 수명(`shared_ptr`·`weak_ptr`)",
+      "같은 셰이더·텍스처를 두 번 요청해도 파일은 한 번만 읽는다",
+      5),
+    L(3, "Renderer 마무리와 검증",
+      "GL 코드 폴더 격리, 공개 헤더 점검, 검색으로 하는 검증",
       "Client와 공개 헤더에 `gl*` 호출이 0개",
       4),
     L(3, "렌더 상태",
@@ -174,9 +191,9 @@ LESSONS = [
       "immediate mode UI, 백엔드 연결, 디버그 패널",
       "실행 중에 값을 바꾸는 패널",
       4, opt=True),
-    L(5, "회고와 DX11 준비",
-      "GL에 묶인 곳 점검, 인터페이스 수정 목록",
-      "DX11 포팅 전 점검표",
+    L(5, "회고",
+      "만든 구조 돌아보기, GL에 묶인 곳 적어 두기, 다음 강의 고르기",
+      "회고 문서 한 쪽",
       3),
 ]
 

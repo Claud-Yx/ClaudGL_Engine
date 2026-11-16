@@ -265,7 +265,7 @@ void cbUpdate( float delta_time )
     box("point", None,
         "주인은 `GEngine` 하나다. `unique_ptr`가 그것을 타입으로 적어 둔다(`Engine/Core/EngineCore.h:28`). "
         "`GetInputManager()`가 내주는 맨 포인터는 “잠깐 쓰라”는 뜻이고, 받은 쪽은 `delete`하지 않는다. "
-        "소유와 빌림을 타입으로 가르는 이 습관은 1-8강 Resource Manager에서 그대로 다시 나온다."),
+        "소유와 빌림을 타입으로 가르는 이 습관은 3-5강 Resource Manager에서 그대로 다시 나온다."),
 ], lead="지금 입력을 쓰는 곳은 `cbUpdate` 하나다. 호출 한 줄에 1-1 〜 1-3강의 내용이 다 들어 있다.")
 
 ch7 = chapter(7, "다시 보면 걸리는 곳", [
