@@ -6,6 +6,11 @@ GetMainWindow() and a temporary loop in main. It has missions and quotes no
 engine code; the first pass (tag first-pass-2026-04) is only the reference
 for the declarations.
 
+Version 4 (2026-11-17) changes two things and nothing else: section 2.2 now
+states each flag, the value it has while the loop runs and when it changes
+(the old table mixed "is false" with "both true"), and the metronome
+comparison in chapter 2 became a neutral one (no music analogies in handouts).
+
 Run:  python -I src/lesson_1_2.py      (from Docs/Handouts, with the handout venv)
 """
 from __future__ import annotations
@@ -191,12 +196,17 @@ ch2 = chapter(2, "게임 루프", [
        ("Client: 루프를 직접 쓰고 그 안에서 엔진 함수를 부른다", "게임마다 루프를 다시 쓴다. 순서를 틀릴 자리가 늘어난다")),
 
     h3("2.2", "루프를 끝내는 두 깃발"),
-    table([32, 68], ["조건", "뜻"], [
-        ["`_is_running`", "엔진이 스스로 멈추려 할 때 쓰는 깃발. `true`로 시작하고, 끄는 함수는 1-4강에서 만든다"],
-        ["`glfwWindowShouldClose( … )`가 거짓", "사용자가 창의 닫기 버튼을 아직 누르지 않았다. GLFW가 창마다 들고 있는 깃발을 읽는다"],
-    ], cell_cls=["lab", ""]),
-    p("둘 다 참인 동안 루프가 돈다. 닫기 버튼을 누른다고 창이 바로 사라지지는 않는다. GLFW는 깃발만 세우고, 루프가 "
-      "그 깃발을 보고 스스로 빠져나온다. 저장할지 묻는 창을 띄울 틈이 여기서 생긴다."),
+    table([31, 21, 48], ["깃발", "루프가 도는 동안의 값", "값이 바뀌는 때"], [
+        ["`_is_running`", "`true`",
+         "엔진이 스스로 멈추려 할 때 `false`로 바꾼다. `true`로 시작하고, 끄는 함수는 1-4강에서 만든다"],
+        ["`glfwWindowShouldClose( … )`", "`GLFW_FALSE`",
+         "사용자가 창의 닫기 버튼을 누르면 `GLFW_TRUE`가 된다. GLFW가 창마다 들고 있는 깃발을 읽은 값이다"],
+    ], cell_cls=["lab", "c", ""]),
+    p("두 깃발은 방향이 반대다. `_is_running`은 참일 때 “계속 돈다”는 뜻이고, `glfwWindowShouldClose`는 참일 때 "
+      "“그만 돈다”는 뜻이다. 그래서 루프는 `_is_running`이 참이고 `glfwWindowShouldClose`가 거짓인 동안 돈다. "
+      "둘 중 하나라도 바뀌면 빠져나온다."),
+    p("닫기 버튼을 누른다고 창이 바로 사라지지는 않는다. GLFW는 깃발만 세우고, 루프가 그 깃발을 보고 스스로 "
+      "빠져나온다. 저장할지 묻는 창을 띄울 틈이 여기서 생긴다."),
 
     h3("2.3", "이미 아는 네 함수"),
     table([30, 46, 24], ["함수", "하는 일", "자세한 설명"], [
@@ -206,8 +216,8 @@ ch2 = chapter(2, "게임 루프", [
         ["`glfwSwapBuffers`", "back buffer와 front buffer를 맞바꾼다", "1-1강 6장"],
     ], cell_cls=["lab", "", "c"], compact=True),
     box("point", None,
-        "프레임은 메트로놈처럼 일정한 간격으로 오지 않는다. 어떤 박은 길고 어떤 박은 짧다. 그래서 게임 로직은 "
-        "“한 박에 얼마”가 아니라 “1초에 얼마”로 적어야 한다. 다음 장의 델타 타임이 그 환산에 쓰인다."),
+        "프레임은 시계 초침처럼 일정한 간격으로 오지 않는다. 어떤 프레임은 길고 어떤 프레임은 짧다. 그래서 게임 로직은 "
+        "“한 프레임에 얼마”가 아니라 “1초에 얼마”로 적어야 한다. 다음 장의 델타 타임이 그 환산에 쓰인다."),
     box("ue", None,
         "언리얼의 루프는 `FEngineLoop::Tick`이다. 한 번 돌 때마다 `UWorld::Tick`이 불리고, 거기서 액터와 컴포넌트의 "
         "`Tick`이 불린다. 게임 코드를 쓰는 사람이 루프를 직접 쓰지 않고 `Tick( float DeltaSeconds )`만 채우는 것은 "

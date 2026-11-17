@@ -74,7 +74,7 @@ LESSONS = [
     L(1, "Game Loop와 Delta Time",
       "루프 한 바퀴의 순서, 델타 타임, Update 콜백, 더블 버퍼링",
       "창을 닫을 때까지 매 프레임 `Update(dt)`가 불린다",
-      2, slug="GameLoop", ver=3),
+      2, slug="GameLoop", ver=4),
     L(1, "Input System",
       "`EKey`, 이벤트를 상태로 바꾸기, 키 콜백과 user pointer, Pressed·Held·Released",
       "키를 누르면 배경색이 바뀐다",
