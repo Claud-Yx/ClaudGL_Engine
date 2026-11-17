@@ -2,6 +2,9 @@
 
 #include "Core/EngineCore.h"
 
+void cbFramebufferSize( GLFWwindow* window, int width, int height );
+void cbUpdate( float delta_time );
+
 int main( void )
 {
     GEngine& engine = GEngine::Get();
@@ -15,18 +18,24 @@ int main( void )
         return static_cast<int>(result);
     }
 
-    double Time{};
-    while ( not glfwWindowShouldClose( engine.GetWindow() ) )
-    {
-        Time   = glfwGetTime();
-        auto r = static_cast<float>((glm::sin( Time ) + 1.0) * 0.5);
-        auto g = static_cast<float>((glm::sin( Time * 0.8 ) + 1.0) * 0.5);
-        auto b = static_cast<float>((glm::sin( Time * 0.5 ) + 1.0) * 0.5);
-        glfwPollEvents();
-        glClearColor( r, g, b, 0.0f );
-        glClear( GL_COLOR_BUFFER_BIT );
-        glfwSwapBuffers( engine.GetWindow() );
-    }
+    engine.SetCallback_FramebufferSize( cbFramebufferSize );
+    engine.SetCallback_Update( cbUpdate );
+    engine.Run();
 
     return static_cast<int>(result);
+}
+
+void cbFramebufferSize( GLFWwindow* window, int width, int height )
+{
+    glViewport( 0, 0, width, height );
+}
+
+void cbUpdate( float delta_time )
+{
+    auto time = GEngine::GetElapsedTime();
+    auto r = static_cast<float>((glm::sin( time ) + 1.0) * 0.5);
+    auto g = static_cast<float>((glm::sin( time * 0.8 ) + 1.0) * 0.5);
+    auto b = static_cast<float>((glm::sin( time * 0.5 ) + 1.0) * 0.5);
+    
+    glClearColor( r, g, b, 0.0f );
 }
