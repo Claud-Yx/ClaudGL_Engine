@@ -27,8 +27,8 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 (the one in `Docs/Handouts/` is current; older ones are in `Legacy/`). If the lesson list changes, update curriculum.py first, then this section.
 
 ### Part 1: Core (API-agnostic)
-- [ ] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
-- [ ] 1-2 Game Loop + Delta Time (Run, Update callback)
+- [x] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
+- [x] 1-2 Game Loop + Delta Time (Run, Update callback)
 - [ ] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
 - [ ] 1-4 Init failure and shutdown handling
 - [ ] 1-5 Logger (Debug logging)
@@ -81,18 +81,28 @@ Handouts for 1-1 to 1-6 were all rewritten on 2026-11-16 in one format: from scr
 function reference cards, worked examples and figures, and no quotes of the first-pass code.
 `Docs/Handouts/` holds only the newest version of each PDF; older versions are in `Docs/Handouts/Legacy/`.
 
-- [ ] 1-1 Project setup, window creation, GEngine singleton (handout v3)
-- [ ] 1-2 Game Loop + Delta Time (handout v3)
+- [x] 1-1 Project setup, window creation, GEngine singleton (handout v3; code at tag `lesson-1-1`,
+  2026-11-17. Mission 7 "break it on purpose" and the first-pass comparison were not done)
+- [x] 1-2 Game Loop + Delta Time (handout v4; code at tag `lesson-1-2`, 2026-11-17. The 2-second
+  color cycle was skipped on purpose: `cbUpdate` takes absolute time from `GEngine::GetElapsedTime()`
+  instead of accumulating dt)
 - [ ] 1-3 Input System (handout v4; the EKey list in `InputKeys.h` is kept, not retyped)
 - [ ] 1-4 Init failure and shutdown handling (handout v2)
 - [ ] 1-5 Logger (handout v2; the logger is built from nothing, no skeleton is left in the repo)
 - [ ] 1-6 Assert and error policy (handout v2)
-- [ ] **Next**: 1-1 with handout v3. Write the bodies yourself. Variable and function names may differ
+- [ ] **Next**: 1-3 with handout v4. Write the bodies yourself. Variable and function names may differ
   from the handouts and the first pass on purpose (renaming is a way to avoid just typing out the
-  handout), so do not flag such differences; map the names when reading a later handout. The old
+  handout), so do not flag such differences; map the names when reading a later handout. So far:
+  `GetMainWindow()` is `GetWindow()`, `SetUpdateCallback` is `SetCallback_Update`,
+  `SetFramebufferSizeCallback` is `SetCallback_FramebufferSize`, `_on_update` is `_on_Update`. The code
+  also has `GetDeltaTime()` and a static `GetElapsedTime()` that the handouts do not have. The old
   code-reading handouts in `Legacy/` (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each
   lesson's missions.
-- The baseline C++ build has not been run since the restart; mission 1 of lesson 1-1 is that check.
+- Deferred on purpose: drawing while the window is being resized. The loop stalls inside
+  `glfwPollEvents()` during a resize drag; the fix is a window refresh callback plus a separate
+  "one frame" function. No handout covers it. Revisit at 3-2, when window code is split from `GEngine`.
+- `Client/Client.vcxproj` references the Engine project, so building Client rebuilds `ClaudGL.lib`
+  first. Before that reference existed, running Client linked a stale library.
 
 ## Notes
 - GLM works with all APIs (OpenGL, DX, Vulkan) - just change #defines
