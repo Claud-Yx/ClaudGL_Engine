@@ -7,6 +7,34 @@
 - Provide hints, concepts, architecture direction only
 - Only show code when explicitly requested
 
+## Working Agreements (decided 2026-11-17)
+Assistant memory is stored per PC and is not shared between the home and office PCs, so agreements that
+must hold on both are written here.
+- **Hints only**: when Claud says "힌트만", find the real cause first (read files, check evidence), then
+  give labelled hints from weak to strong and offer a way to ask for the answer. When Claud names the
+  cause, confirm it with the evidence and then explain fully.
+- **Commits**: commit straight to `main`, no feature branch. The code of one lesson is one commit with an
+  annotated tag `lesson-<part>-<order>` (for example `lesson-1-2`); docs changes are separate `Docs:`
+  commits; messages are Korean in the `Type: 설명` style. Push only when asked.
+- **C++ level**: C++20 features are welcome in the engine code when the current lesson has a natural use
+  for one (`std::numbers`, designated initializers, `std::format`, `std::source_location`, `using enum`,
+  `std::span`, concepts). Suggest at most one per lesson. No modules, coroutines or a switch to
+  `/std:c++latest` unless Claud brings it up.
+- **Handouts are not personalized**: they must stay usable by anyone. No analogies or examples drawn from
+  Claud's personal background, and Claud's own deviations (renames, extra experiments, skipped missions)
+  are recorded in this file, not in the handouts. Such analogies are for chat only, when Claud asks
+  directly. Fixes that help any reader (wrong line numbers, a missing pitfall row, an unclear sentence)
+  are still made. The lesson-builder skill has the details.
+- **When a change seems to have no effect**, or Engine breakpoints do not bind: compare the timestamps of
+  `lib/Debug/x64/ClaudGL.lib` and `Debug/x64/Client.exe` with the source before reading code. Rider's
+  incremental build can skip a project.
+- **Codex mirrors**: `AGENTS.md` is an exact copy of this file. `.agents/skills/claudgl-lesson-builder/SKILL.md`
+  is a copy of `.claude/skills/claudgl-lesson-builder/SKILL.md` with `CLAUDE.md` written as `AGENTS.md`
+  and "Claude Docs" written as "Codex Docs". When an original changes, update its mirror in the same commit.
+- **Pending handout fix**: chapter 10 of the 1-1 handout lists the stale `ClaudGL.lib` only under
+  `LNK2019`. At the next 1-1 revision, add it under "crashes at the first `gl*` call although the loader
+  line is there", together with the project-reference fix.
+
 ## Project Goal
 Build one small game engine on OpenGL, start to finish: a lit, shadowed, post-processed scene you can
 fly through, with every `gl*` call kept inside the renderer layer.
