@@ -87,9 +87,11 @@ function reference cards, worked examples and figures, and no quotes of the firs
 - [ ] 1-4 Init failure and shutdown handling (handout v2)
 - [ ] 1-5 Logger (handout v2; the logger is built from nothing, no skeleton is left in the repo)
 - [ ] 1-6 Assert and error policy (handout v2)
-- [ ] **Next**: 1-1 with handout v3. Keep the class and function names of the first pass so the later
-  handouts still match; write the bodies yourself. The old code-reading handouts in `Legacy/`
-  (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each lesson's missions.
+- [ ] **Next**: 1-1 with handout v3. Write the bodies yourself. Variable and function names may differ
+  from the handouts and the first pass on purpose (renaming is a way to avoid just typing out the
+  handout), so do not flag such differences; map the names when reading a later handout. The old
+  code-reading handouts in `Legacy/` (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each
+  lesson's missions.
 - The baseline C++ build has not been run since the restart; mission 1 of lesson 1-1 is that check.
 
 ## Notes
