@@ -5,6 +5,14 @@ was removed on 2026-11-16 (first pass kept at tag first-pass-2026-04), so this
 lesson has missions and never quotes the first-pass code. Class and function
 names follow the first pass so that later handouts still match.
 
+Version 6 (2026-11-19): the reader found the missions vague and scattered.
+Each of the eight mission steps now states what must be done as plain
+statements and ends with a "통과" (pass) condition, and a new last chapter 14
+"할 일 목록" spells every step out as a task list with a way to check each task.
+The design chapter leaves no decision to the reader, so chapter 14 has no
+"결정이 막히면" section. Chapters 1 to 13 keep their numbers; the eight steps
+keep their numbers and meaning.
+
 Run:  python -I src/lesson_1_3.py      (from Docs/Handouts, with the handout venv)
 """
 from __future__ import annotations
@@ -43,9 +51,11 @@ COVER = cover(
     ],
     note=("읽는 법",
           "처음부터 직접 쓰는 자료다. 2 〜 5장이 개념과 함수이고, 6장에서 이미 있는 `EKey`를 읽는다. 7장의 모양을 "
-          "확인한 뒤 8장의 미션을 순서대로 구현한다. 코드 블록은 완성본이 아니다."),
+          "확인한 뒤 8장의 미션을 순서대로 구현한다. 미션이 무엇을 하라는 것인지 분명하지 않으면 14장의 할 일 목록을 "
+          "본다. 코드 블록은 완성본이 아니다."),
     toc=["한 장으로 보기", "이벤트와 상태", "GLFW의 키 콜백", "C 콜백에 객체를 잇기", "Pressed · Held · Released",
-         "EKey: 키에 이름 붙이기", "설계", "구현 미션", "흔한 함정", "완료 기준", "생각해 볼 질문", "해설", "용어집"],
+         "EKey: 키에 이름 붙이기", "설계", "구현 미션", "흔한 함정", "완료 기준", "생각해 볼 질문", "해설", "용어집",
+         "할 일 목록"],
 )
 
 # --------------------------------------------------------------------------
@@ -344,7 +354,7 @@ ch5 = chapter(5, "Pressed · Held · Released", [
     .render("한 프레임 안의 순서다. 입력 넘기기가 이벤트 처리와 게임 코드 사이에 끼면, 게임 코드가 볼 때는 두 배열이 늘 "
             "같아서 Pressed와 Released가 한 번도 참이 되지 않는다."),
     box("cs", None,
-        "컴퓨터구조 수업의 엣지 검출 회로와 같은 구조다. 직전 배열은 직전 값을 붙들고 있는 D 플립플롭이고, 입력 관리자의 "
+        "디지털 회로의 엣지 검출 회로와 같은 구조다. 직전 배열은 직전 값을 붙들고 있는 D 플립플롭이고, 입력 관리자의 "
         "`Update()`는 값을 넘겨받는 클록이다. Pressed는 상승 엣지(`현재 AND NOT 직전`), Released는 하강 엣지"
         "(`NOT 현재 AND 직전`)다. 프레임이 클록 주기인 셈이다."),
     box("ue", None,
@@ -532,36 +542,58 @@ void cbUpdate( float delta_time )
 ch8 = chapter(8, "구현 미션", [
     steps([
         ("키 이벤트를 눈으로 본다",
-         "`main`에서 임시 콜백을 달아 `key`와 `action`을 `std::cout`으로 찍는다. A를 눌렀다 떼고, 꾹 눌러 보고, "
-         "다른 창을 눌러 포커스를 옮겨 본다.",
+         "`main`에서 창에 임시 키 콜백을 단다. 그 콜백은 불릴 때마다 받은 `key`와 `action`을 `std::cout`으로 한 줄 "
+         "찍는다. 실행해서 셋을 해 본다. A를 한 번 눌렀다 뗀다. A를 2초쯤 꾹 누른다. A를 누른 채 다른 창을 눌러 "
+         "포커스를 옮긴다. **통과:** 눌렀다 떼면 `key` 65에 `action` 1과 0이 한 줄씩 찍히고, 꾹 누르면 그 사이에 "
+         "`action` 2가 여러 줄 찍힌다. 포커스를 옮겼을 때 찍힌 것이 3.2절의 마지막 문단과 맞는다.",
          ["콜백의 모양은 3장의 `GLFWkeyfun`이다. 창을 가리키는 값은 `GetMainWindow()`로 얻는다."]),
         ("`MInputManager`의 파일과 선언을 만든다",
-         "`Engine/Manager/`에 `.h`와 `.cpp`를 더하고 7.2절의 선언을 옮긴다. 본체는 비워 두고(조회 함수는 우선 `false`) "
-         "빌드되는지 본다.",
-         ["새 `.cpp`의 첫 줄은 `#include \"pch.h\"`다. `.vcxproj`의 새 항목이 한 줄인지 확인한다 (1-1강 10장)."]),
+         "`Engine/Manager/`에 `InputManager.h`와 `InputManager.cpp`를 만들어 Engine 프로젝트에 더한다. 헤더에는 7.2절의 "
+         "`MInputManager` 선언을 그대로 옮긴다. `.cpp`에는 선언된 함수마다 빈 본체를 두고, `bool`을 돌려주는 함수는 "
+         "우선 `false`를 돌려준다. **통과:** 솔루션이 오류 없이 빌드되고, `Engine/Engine.vcxproj`에서 "
+         "`InputManager.cpp` 항목이 한 줄이다.",
+         ["새 `.cpp`의 첫 줄은 `#include \"pch.h\"`다. `.vcxproj`의 항목이 여러 줄로 들어갔으면 1-1강 10장에서 "
+          "그 증상을 찾는다."]),
         ("엔진이 입력 관리자를 소유한다",
-         "`GEngine`에 멤버와 `GetInputManager()`를 더하고 `Init`에서 만든다. `main`에서 받아 `nullptr`이 아닌지 확인한다.",
+         "`GEngine`에 7.2절의 둘째 스케치대로 `_input_manager` 멤버와 `GetInputManager()`를 더한다. `Init`이 "
+         "`MInputManager` 객체를 하나 만들어 그 멤버에 넣고, `GetInputManager()`는 그 객체의 주소를 빌려준다. "
+         "**통과:** `main`에서 `Init` 뒤에 `GetInputManager()`를 부르면 `nullptr`이 아닌 주소가 나온다. 중단점이나 "
+         "임시 출력으로 본다.",
          ["`undefined type`이나 `incomplete type` 오류가 나면 그 `.cpp`가 무엇을 포함해야 하는지 본다 (7.2절, 9장)."]),
         ("콜백이 현재 상태를 적는다",
-         "user pointer를 맡기고, 1단계의 임시 콜백을 지우고 `cbSetKey`를 단다. 콜백은 엔진을 거쳐 `_current_keys`의 "
-         "그 키 칸을 켜고 끈다.",
+         "`Init`이 창의 user pointer에 엔진의 주소를 맡기고, 창의 키 콜백으로 `cbSetKey`를 단다. 1단계의 임시 콜백은 "
+         "지운다. `cbSetKey`는 받은 `window`에서 엔진을 되찾고, 엔진의 입력 관리자가 가진 `_current_keys`에서 누른 "
+         "키의 칸을 켜고 뗀 키의 칸을 끈다. -1로 온 `key`로는 배열에 닿지 않는다. `GLFW_REPEAT`에 반응할지는 직접 "
+         "정한다. **통과:** A를 누르면 `cbSetKey`에 건 중단점에 걸리고, 콜백의 끝에서 `_current_keys`의 65번 칸이 "
+         "`true`다. 떼면 `false`다.",
          ["7.3절의 표가 `Init` 안에서의 순서를 알려 준다.",
-          "`action`의 세 값 가운데 무엇에 반응할지, -1로 오는 `key`를 어떻게 할지 정한다 (3장, 6.2절)."]),
+          "`action`의 세 값은 3.2절에, -1이 들어오는 길은 6.2절에 있다."]),
         ("`IsValidKey`와 조회 함수 셋을 쓴다",
-         "5장의 표를 한 줄씩 옮긴다. `cbUpdate`에서 `IsKeyPressed( EKey::A )`가 참이면 배경색을 바꾸고 `std::cout`으로 한 줄을 "
-         "찍는다. A를 꾹 누르면 몇 줄이 찍히는지 본다. 아직 `Update()`가 없어서 기대와 다르다. 이유를 적어 둔다.",
+         "`IsValidKey`는 배열의 인덱스로 써도 되는 키에만 참을 돌려준다. 조회 함수 셋은 5장 예시 표의 한 줄씩이다. "
+         "직전과 이번 프레임의 두 값이 그 줄과 같을 때만 참이고, 유효하지 않은 키에는 `false`를 돌려준다. `cbUpdate`는 "
+         "`IsKeyPressed( EKey::A )`가 참이면 배경색을 바꾸고 `std::cout`으로 한 줄을 찍는다. A를 2초쯤 꾹 눌러 몇 줄이 "
+         "찍히는지 본다. 아직 `Update()`가 없어서 기대와 다르다. **통과:** A를 누르면 색이 바뀌고 줄이 찍힌다. 꾹 "
+         "눌렀을 때 한 줄이 아닌 이유를 한 문장으로 적어 두었다.",
          ["`EKey`는 그대로 인덱스가 되지 못한다 (6.1절)."]),
         ("`Update()`로 직전 상태를 넘긴다",
-         "본체를 쓰고 `Run` 안에서 프레임마다 부른다. A를 꾹 눌러도 한 줄만 찍히는지 본다.",
+         "`MInputManager::Update()`는 불릴 때마다 현재 배열의 내용 전체를 직전 배열로 넘긴다. `Run`의 루프는 프레임마다 "
+         "이 함수를 한 번 부른다. **통과:** A를 2초쯤 꾹 눌러도 5단계의 줄이 한 번만 찍힌다. `Update()`를 프레임의 "
+         "그 자리에서 부르는 이유를 한 문장으로 말할 수 있다.",
          ["부를 자리는 5.2절의 그림에 있다. 본체는 `std::array`의 성질 하나면 된다 (5.3절)."]),
         ("A·S·D로 색을 바꾸고, 일부러 틀려 본다",
-         "세 키에 색을 하나씩 붙인다. 그 뒤 하나씩 해 보고 찍히는 줄 수를 본 뒤 되돌린다. (가) `IsKeyPressed`를 "
-         "`IsKeyHeld`로 바꾼다. (나) `Update()` 호출을 이벤트 처리 바로 뒤로 옮긴다.",
+         "`cbUpdate`가 A, S, D에 서로 다른 배경색을 하나씩 붙인다. 그 뒤 아래 둘을 하나씩 해 보고, A를 꾹 눌렀을 때 "
+         "찍히는 줄 수를 적은 뒤 되돌린다. (가) `IsKeyPressed`를 `IsKeyHeld`로 바꾼다. (나) `Update()` 호출을 이벤트 "
+         "처리 바로 뒤로 옮긴다. **통과:** 세 키를 누르는 순간 각각 다른 색이 된다. (가)와 (나)의 줄 수를 적어 "
+         "두었고, 둘 다 되돌려서 다시 한 줄만 찍힌다.",
          ["(나)의 결과는 5.2절 그림의 아랫줄이다."]),
         ("확인하고 커밋한다",
-         "확인용 출력을 지우고, 10장의 기준을 하나씩 확인한 뒤 커밋한다. 그 뒤에 4월의 코드와 비교한다 (10.1절)."),
+         "확인용으로 넣은 `std::cout` 출력을 모두 지운다. 10장의 여섯 줄을 하나씩 확인하고, 이 강에서 바꾼 것을 커밋 "
+         "하나로 묶는다. 커밋한 뒤에 10.1절의 명령으로 4월의 코드와 비교한다. **통과:** `Client/`에서 "
+         "`glfwSetKeyCallback`과 `glfwGetKey`가 검색되지 않고, 10장의 여섯 줄이 모두 맞다."),
     ]),
-], lead="한 단계가 끝날 때마다 빌드해서 눈으로 확인한다. 힌트는 막혔을 때 위에서부터 하나씩만 본다.", pb=True)
+], lead="한 단계가 끝날 때마다 빌드해서 눈으로 확인한다. 단계마다 “통과”에 적힌 것이 보이면 다음으로 간다. 힌트는 "
+        "막혔을 때 위에서부터 하나씩만 본다. 무엇을 하라는 것인지 그래도 분명하지 않으면 맨 뒤 14장에 단계별로 "
+        "풀어 적은 목록이 있다.", pb=True)
 
 ch9 = chapter(9, "흔한 함정", [
     table([35, 43, 22], ["증상", "원인", "확인 방법"], [
@@ -643,11 +675,87 @@ ch13 = glossary_chapter(13, [
     ("전방 선언", "forward declaration", "클래스의 이름만 먼저 알리는 선언. 전체 모양은 다른 곳에 있다"),
 ], pb=False)
 
+
+def todo(mission: str, rows: list) -> Raw:
+    """One mission of the task list: a heading and a small table kept on one page."""
+    return keep(h4(mission),
+                table([6, 54, 40], ["", "할 일", "됐는지 보는 법"], rows, cell_cls=["num", "", ""], compact=True))
+
+
+ch14 = chapter(14, "할 일 목록", [
+    todo("1단계 — 키 이벤트를 눈으로 본다", [
+        ["1", "`Client/main.cpp`에 `GLFWkeyfun` 모양의 임시 함수를 만든다. 받은 `key`와 `action`을 `std::cout`으로 "
+              "한 줄 찍는다", "빌드된다"],
+        ["2", "`main`에서 그 함수를 창의 키 콜백으로 단다", "창에 포커스를 두고 아무 키나 누르면 줄이 찍힌다"],
+        ["3", "A를 한 번 눌렀다 뗀다", "`key` 65에 `action` 1과 0이 한 줄씩 찍힌다"],
+        ["4", "A를 2초쯤 꾹 눌렀다 뗀다", "1과 0 사이에 `action` 2가 여러 줄 찍힌다"],
+        ["5", "A를 누른 채 다른 창을 눌러 포커스를 옮긴다", "찍힌 것이 3.2절의 마지막 문단과 맞는다"],
+    ]),
+    todo("2단계 — MInputManager의 파일과 선언을 만든다", [
+        ["1", "`Engine/Manager/`에 `InputManager.h`와 `InputManager.cpp`를 만들어 Engine 프로젝트에 더한다",
+         "`Engine/Engine.vcxproj`에서 `InputManager.cpp` 항목이 한 줄이다"],
+        ["2", "헤더에 7.2절의 `MInputManager` 선언을 옮긴다 (7.4절)", "이름과 인자가 7.2절의 스케치와 같다"],
+        ["3", "`.cpp`에 선언된 함수 여섯의 본체를 빈 채로 적는다. `bool`을 돌려주는 넷은 우선 `false`를 돌려준다",
+         "솔루션이 오류 없이 빌드된다"],
+    ]),
+    todo("3단계 — 엔진이 입력 관리자를 소유한다", [
+        ["1", "`GEngine`에 7.2절 둘째 스케치의 멤버와 함수를 더한다", "`EngineCore.h`에 두 선언이 보인다"],
+        ["2", "`GetInputManager()`는 입력 관리자의 주소만 빌려준다", "반환 타입이 `MInputManager*`다 (4.3절)"],
+        ["3", "`Init`이 입력 관리자를 만들어 `_input_manager`에 넣는다", "빌드된다 (오류는 9장의 둘째 줄)"],
+        ["4", "`main`에서 `Init` 뒤에 `GetInputManager()`가 돌려준 값을 본다", "`nullptr`이 아니다 (중단점이나 임시 출력)"],
+    ]),
+    todo("4단계 — 콜백이 현재 상태를 적는다", [
+        ["1", "`Init`이 창의 user pointer에 엔진의 주소를 맡긴다", "콜백에서 꺼낸 값이 `nullptr`이 아니다"],
+        ["2", "`Init`이 창의 키 콜백으로 `MInputManager::cbSetKey`를 단다. 맡기기, 만들기(3단계), 달기의 순서는 "
+              "7.3절의 표를 보고 정한다", "키를 누르면 `cbSetKey`의 중단점에 걸린다"],
+        ["3", "1단계의 임시 함수와 그것을 다는 줄을 `main.cpp`에서 지운다", "`Client/`에 `glfwSetKeyCallback`이 없다"],
+        ["4", "콜백이 `window`에서 엔진과 입력 관리자를 찾는다 (4.2절)", "키를 눌러도 접근 위반으로 죽지 않는다"],
+        ["5", "`cbSetKey`가 누른 키의 칸을 `_current_keys`에서 켜고, 뗀 키의 칸을 끈다. `GLFW_REPEAT`에 반응할지는 "
+              "직접 정한다 (3.2절)", "A를 누른 뒤 65번 칸이 `true`, 뗀 뒤 `false`다 (중단점)"],
+        ["6", "`key`가 -1로 오면 배열에 닿지 않는다 (6.2절)", "-1을 거르는 줄이 배열을 쓰는 줄보다 앞에 있다"],
+    ]),
+    todo("5단계 — IsValidKey와 조회 함수 셋을 쓴다", [
+        ["1", "`IsValidKey`는 배열의 인덱스로 써도 되는 키에만 참을 돌려준다. 어떤 값이 인덱스가 되면 안 되는지는 "
+              "6.2절에서 찾는다", "`IsValidKey( EKey::Unknown )`은 `false`, `IsValidKey( EKey::A )`는 `true`다"],
+        ["2", "`IsKeyPressed`, `IsKeyHeld`, `IsKeyReleased`는 각각 5장 예시 표의 한 줄이다. 직전과 이번 프레임의 두 값이 "
+              "그 줄과 같을 때만 참을 돌려준다", "세 함수가 각각 표의 어느 줄인지 짚을 수 있다"],
+        ["3", "세 함수는 유효하지 않은 키에 `false`를 돌려준다 (7.4절)", "`IsKeyPressed( EKey::Unknown )`이 죽지 않고 `false`다"],
+        ["4", "`cbUpdate`가 `IsKeyPressed( EKey::A )`가 참일 때 배경색을 바꾸고 `std::cout`으로 한 줄을 찍는다",
+         "A를 누르면 색이 바뀌고 줄이 찍힌다"],
+        ["5", "A를 2초쯤 꾹 누르고 찍히는 줄을 본다. 한 줄이 아닌 이유를 적는다", "적은 이유가 9장의 여섯째 줄과 맞는다"],
+    ]),
+    todo("6단계 — Update()로 직전 상태를 넘긴다", [
+        ["1", "`MInputManager::Update()`는 불릴 때마다 현재 배열의 내용 전체를 직전 배열로 넘긴다",
+         "`Update()`가 끝난 직후 두 배열의 내용이 같다 (중단점)"],
+        ["2", "`Run`의 루프가 프레임마다 `Update()`를 한 번 부른다. 프레임의 어디에서 부르는가는 5.2절의 그림에서 찾는다",
+         "A를 2초쯤 꾹 눌러도 5단계의 줄이 한 번만 찍힌다"],
+        ["3", "그 자리에서 부르는 이유를 한 문장으로 적는다", "10장의 다섯째 줄에 표시할 수 있다"],
+    ]),
+    todo("7단계 — A·S·D로 색을 바꾸고, 일부러 틀려 본다", [
+        ["1", "`cbUpdate`가 A, S, D에 서로 다른 배경색을 하나씩 붙인다. 셋 다 `IsKeyPressed`로 묻는다",
+         "세 키를 누르는 순간 각각 다른 색이 된다"],
+        ["2", "(가) `cbUpdate`의 `IsKeyPressed`를 `IsKeyHeld`로 바꾸고 A를 꾹 누른다. 찍힌 줄 수를 적는다",
+         "줄 수가 6단계와 다르다. 왜 다른지 5.1절의 그림으로 설명할 수 있다"],
+        ["3", "(가)를 되돌린다", "A를 꾹 눌러도 다시 한 줄만 찍힌다"],
+        ["4", "(나) `Update()` 호출을 이벤트 처리 바로 뒤로 옮기고 A를 누른다. 찍힌 줄 수를 적는다",
+         "결과가 5.2절 그림의 아랫줄과 맞는다"],
+        ["5", "(나)를 되돌린다", "A를 꾹 눌러도 다시 한 줄만 찍힌다"],
+    ]),
+    todo("8단계 — 확인하고 커밋한다", [
+        ["1", "확인용으로 넣은 `std::cout` 출력을 모두 지운다", "키를 눌러도 콘솔에 아무것도 찍히지 않는다"],
+        ["2", "`Client/`에서 `glfwSetKeyCallback`과 `glfwGetKey`를 검색한다", "한 건도 나오지 않는다"],
+        ["3", "10장의 여섯 줄을 하나씩 확인한다", "여섯 줄에 모두 표시했다"],
+        ["4", "이 강에서 바꾼 것을 커밋 하나로 묶는다", "`git log`에 이 강의 커밋이 하나다"],
+        ["5", "커밋한 뒤 10.1절의 명령으로 4월의 코드와 비교한다", "다른 곳마다 왜 다른지 설명할 수 있다"],
+    ]),
+], lead="8장의 문장만으로 무엇을 하라는 것인지 분명하지 않을 때 보는 목록이다. 단계마다 할 일을 한 줄씩 풀고, 됐는지 "
+        "보는 법을 옆에 적었다. 어떻게 하는지는 적지 않았다. 그것은 2 〜 7장과 8장의 힌트에 있다.", pb=True)
+
 if __name__ == "__main__":
     info = build(
         {"title": f"ClaudGL Engine {ME['id']} {ME['title']} v{ME['ver']}",
          "footer": f"ClaudGL Engine · {ME['id']} {ME['title']} · v{ME['ver']}"},
-        COVER, [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10, ch11, ch12, ch13], OUT_HTML,
+        COVER, [ch1, ch2, ch3, ch4, ch5, ch6, ch7, ch8, ch9, ch10, ch11, ch12, ch13, ch14], OUT_HTML,
     )
     pages = render(OUT_HTML, OUT_PDF)
     print(f"pdf: {OUT_PDF} ({pages} pages)")

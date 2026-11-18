@@ -83,17 +83,26 @@ Part 5 Advanced:
 파일 이름은 `ClaudGL_<강 번호>_<주제>_v<버전>.pdf`다. 한 번 나간 PDF를 고치면 버전을 올린다.
 
 - `ClaudGL_00_Plan_v6.pdf` — 전체 강의 계획서. 스터디를 시작할 때 보는 지침서라서 진행 상황은 들어 있지 않다.
-- `ClaudGL_1-1_ProjectAndWindow_v4.pdf`, `ClaudGL_1-2_GameLoop_v5.pdf`, `ClaudGL_1-3_Input_v5.pdf`,
-  `ClaudGL_1-4_InitAndShutdown_v3.pdf`, `ClaudGL_1-5_Logger_v3.pdf`, `ClaudGL_1-6_Assert_v3.pdf`
+- `ClaudGL_1-1_ProjectAndWindow_v5.pdf`, `ClaudGL_1-2_GameLoop_v6.pdf`, `ClaudGL_1-3_Input_v6.pdf`,
+  `ClaudGL_1-4_InitAndShutdown_v4.pdf`, `ClaudGL_1-5_Logger_v4.pdf`, `ClaudGL_1-6_Assert_v4.pdf`
   — 여섯 강 모두 2026-11-16에 같은 양식으로 다시 썼다. 처음부터 직접 쓰는 자료이고 함수 설명, 예시, 그림,
   구현 미션이 있다. 완성 코드는 없다. 1차 코드는 인용하지 않고, 엔진 코드는 함수 이름으로 가리킨다.
-  1-2강은 2026-11-17에 2.2절의 표와 문장 하나를 고쳐 v4가 됐다.
+- `ClaudGL_1-7_FilesAndPaths_v2.pdf`, `ClaudGL_2-1_StateMachine_v2.pdf` — 2026-11-18에 같은 양식으로 새로 썼다.
+  1-7강은 작업 디렉터리, `std::filesystem`, 텍스트·바이너리 읽기를 다루고 `namespace FileSystem`
+  (`Init`, `GetAssetRoot`, `GetAssetPath`, `ReadText`, `ReadBinary`)의 선언을 새로 정한다. 2-1강은 컨텍스트,
+  상태 기계, 객체와 바인드, `glGetError`, 디버그 출력을 다루고 Part 2의 "감싸고 싶은 것 목록"을 시작한다.
+  두 강 모두 학습자가 실제로 쓴 코드가 아니라 1-1 〜 1-6강 자료의 선언을 기준으로 썼다.
 - 예전 판은 `Legacy/` 폴더에 있다. 그 가운데 `Legacy/ClaudGL_1-1_ProjectAndWindow_v2.pdf`,
   `Legacy/ClaudGL_1-2_GameLoop_v2.pdf`, `Legacy/ClaudGL_1-3_Input_v3.pdf`는 1차 코드를 줄 단위로 읽는 자료다.
   미션이 없고, 각 강의 미션을 끝낸 뒤에 읽는 해설로 쓴다.
+- 2026-11-19에 여덟 강 모두 미션 양식을 고쳤다. 학습자가 "무엇을 하라는 것인지 모호하고 앞뒤로 오가게 된다"고
+  해서다. 미션 단계마다 할 일을 서술문으로 적고 "통과" 조건을 붙였고, 맨 뒤에 "할 일 목록" 장을 더했다.
+  그 장에는 미션별 할 일과 확인 방법이 표로 있고, 결정할 것이 있는 강에는 막혔을 때의 기본 선택도 있다.
+  기본은 여전히 앞에서부터 읽고 찾아가며 하는 것이고, 이 장은 막혔을 때 본다.
 
 1-4강 자료의 구성: 왜 필요한가 → 초기화는 실패할 수 있다 → 반쯤 된 초기화 되돌리기 → 종료 경로
-→ 자원의 주인과 값 초기화 → 설계 → 구현 미션(8단계) → 흔한 함정 → 완료 기준 → 생각해 볼 질문 → 해설 → 용어집.
+→ 자원의 주인과 값 초기화 → 설계 → 구현 미션(8단계) → 흔한 함정 → 완료 기준 → 생각해 볼 질문 → 해설 → 용어집
+→ 할 일 목록.
 1-1 〜 1-3강 자료가 "1-4강에서 고친다"고 미뤄 둔 13건을 여기서 받는다. 넷은 이 강의 주제이고, 나머지 아홉
 (첫 프레임 dt, dt 상한, 수직 동기, 입력 쪽 셋, 프로젝트 설정 셋)은 6.4절의 표에 모여 있다.
 
