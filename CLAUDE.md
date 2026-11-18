@@ -31,9 +31,10 @@ must hold on both are written here.
 - **Codex mirrors**: `AGENTS.md` is an exact copy of this file. `.agents/skills/claudgl-lesson-builder/SKILL.md`
   is a copy of `.claude/skills/claudgl-lesson-builder/SKILL.md` with `CLAUDE.md` written as `AGENTS.md`
   and "Claude Docs" written as "Codex Docs". When an original changes, update its mirror in the same commit.
-- **Pending handout fix**: chapter 10 of the 1-1 handout lists the stale `ClaudGL.lib` only under
-  `LNK2019`. At the next 1-1 revision, add it under "crashes at the first `gl*` call although the loader
-  line is there", together with the project-reference fix.
+- **When Claud asks what a lesson wants**: answer with a short ordered list (what to do, where their code
+  stands, how to tell it passes) and a recommended default for each open decision. The handouts carry the
+  same thing in generic form: every mission step ends with a "통과" condition and the last chapter
+  "할 일 목록" lists the tasks per mission.
 
 ## Project Goal
 Build one small game engine on OpenGL, start to finish: a lit, shadowed, post-processed scene you can
@@ -58,7 +59,7 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 - [x] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
 - [x] 1-2 Game Loop + Delta Time (Run, Update callback)
 - [x] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
-- [ ] 1-4 Init failure and shutdown handling
+- [x] 1-4 Init failure and shutdown handling
 - [ ] 1-5 Logger (Debug logging)
 - [ ] 1-6 Assert and error handling policy
 - [ ] 1-7 Files and paths
@@ -108,26 +109,41 @@ plus a Logger skeleton, written 2026-04) is kept at tag `first-pass-2026-04` as 
 Handouts for 1-1 to 1-6 were all rewritten on 2026-11-16 in one format: from scratch with missions,
 function reference cards, worked examples and figures, and no quotes of the first-pass code.
 `Docs/Handouts/` holds only the newest version of each PDF; older versions are in `Docs/Handouts/Legacy/`.
+On 2026-11-19 all eight handouts (1-1 to 1-7 and 2-1) got the clearer mission format: each mission step
+states the task and a "통과" condition, and a last chapter "할 일 목록" spells the missions out as task
+lists, with default choices for the lesson's decisions where it has any.
 
-- [x] 1-1 Project setup, window creation, GEngine singleton (handout v4; code at tag `lesson-1-1`,
+- [x] 1-1 Project setup, window creation, GEngine singleton (handout v5; code at tag `lesson-1-1`,
   2026-11-17. Mission 7 "break it on purpose" and the first-pass comparison were not done)
-- [x] 1-2 Game Loop + Delta Time (handout v5; code at tag `lesson-1-2`, 2026-11-17. The 2-second
+- [x] 1-2 Game Loop + Delta Time (handout v6; code at tag `lesson-1-2`, 2026-11-17. The 2-second
   color cycle was skipped on purpose: `cbUpdate` takes absolute time from `GEngine::GetElapsedTime()`
   instead of accumulating dt)
-- [x] 1-3 Input System (handout v5; code at tag `lesson-1-3`, 2026-11-18; the EKey list in
+- [x] 1-3 Input System (handout v6; code at tag `lesson-1-3`, 2026-11-18; the EKey list in
   `InputKeys.h` is kept, not retyped. Two items the handouts leave for 1-4 are already done:
   `cbSetKey` checks both ends of the key range with `IsValidKey`, and `GEngine::Stop()` exists and
   the client quits on Esc)
-- [ ] 1-4 Init failure and shutdown handling (handout v3)
-- [ ] 1-5 Logger (handout v3; the logger is built from nothing, no skeleton is left in the repo)
-- [ ] 1-6 Assert and error policy (handout v3)
-- [ ] **Next**: 1-4 with handout v3. Write the bodies yourself. Variable and function names may differ
+- [x] 1-4 Init failure and shutdown handling (handout v4; code at tag `lesson-1-4`, 2026-11-19.
+  `Shutdown()` releases the input manager, then the window, then GLFW, and is safe to call twice; a
+  failed `Init` calls it before returning. The last cleanup was written by the assistant at Claud's
+  request, to learn from the diff: the flag `_is_glfw_initialized`, `Shutdown()` in the failure branches,
+  and the error codes `GLFW_InitFailed` / `GLFW_WindowFailed` / `GLAD_Failed`. None of the nine small
+  items of section 6.4 was done: first-frame dt, dt cap, vsync, an "is the key down" query, `const` on
+  the queries, the Release link input. Later handouts may assume some of them)
+- [ ] 1-5 Logger (handout v4; the logger is built from nothing, no skeleton is left in the repo)
+- [ ] 1-6 Assert and error policy (handout v4)
+- [ ] 1-7 Files and paths (handout v2, written 2026-11-18. New declarations: `namespace FileSystem` with
+  `Init`, `GetAssetRoot`, `GetAssetPath`, `ReadText`, `ReadBinary` in `Engine/Core/FileSystem.h`)
+- [ ] 2-1 OpenGL as a state machine (handout v2, written 2026-11-18. Names in it are examples:
+  `cbGLDebugMessage`, a wrap list in `Docs/WrapList.md`)
+- [ ] **Next**: 1-5 with handout v4. Write the bodies yourself. Variable and function names may differ
   from the handouts and the first pass on purpose (renaming is a way to avoid just typing out the
   handout), so do not flag such differences; map the names when reading a later handout. So far:
   `GetMainWindow()` is `GetWindow()`, `SetUpdateCallback` is `SetCallback_Update`,
   `SetFramebufferSizeCallback` is `SetCallback_FramebufferSize`, `_on_update` is `_on_Update`,
-  `_current_keys` / `_previous_keys` are `_cur_keys` / `_prev_keys`, and the quit request the 1-4
-  handout calls `RequestQuit` (an example name) is `Stop()`. The code also has `GetDeltaTime()` and a
+  `_current_keys` / `_previous_keys` are `_cur_keys` / `_prev_keys`, and the single `InitErrorCode::Fail`
+  is three codes, one per stage. The GLFW error callback is registered by the client through the static
+  `GEngine::SetCallback_SetError`, and the client prints failures with `std::cerr` (the Logger of 1-5
+  replaces those lines). The code also has `GetDeltaTime()` and a
   static `GetElapsedTime()` that the handouts do not have. The old code-reading handouts in `Legacy/`
   (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each lesson's missions.
 - Decided in 1-3: the key callback stays a static member of `MInputManager` and reaches the arrays
