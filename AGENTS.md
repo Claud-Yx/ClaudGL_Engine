@@ -109,16 +109,16 @@ Handouts for 1-1 to 1-6 were all rewritten on 2026-11-16 in one format: from scr
 function reference cards, worked examples and figures, and no quotes of the first-pass code.
 `Docs/Handouts/` holds only the newest version of each PDF; older versions are in `Docs/Handouts/Legacy/`.
 
-- [x] 1-1 Project setup, window creation, GEngine singleton (handout v3; code at tag `lesson-1-1`,
+- [x] 1-1 Project setup, window creation, GEngine singleton (handout v4; code at tag `lesson-1-1`,
   2026-11-17. Mission 7 "break it on purpose" and the first-pass comparison were not done)
-- [x] 1-2 Game Loop + Delta Time (handout v4; code at tag `lesson-1-2`, 2026-11-17. The 2-second
+- [x] 1-2 Game Loop + Delta Time (handout v5; code at tag `lesson-1-2`, 2026-11-17. The 2-second
   color cycle was skipped on purpose: `cbUpdate` takes absolute time from `GEngine::GetElapsedTime()`
   instead of accumulating dt)
-- [ ] 1-3 Input System (handout v4; the EKey list in `InputKeys.h` is kept, not retyped)
-- [ ] 1-4 Init failure and shutdown handling (handout v2)
-- [ ] 1-5 Logger (handout v2; the logger is built from nothing, no skeleton is left in the repo)
-- [ ] 1-6 Assert and error policy (handout v2)
-- [ ] **Next**: 1-3 with handout v4. Write the bodies yourself. Variable and function names may differ
+- [ ] 1-3 Input System (handout v5; the EKey list in `InputKeys.h` is kept, not retyped)
+- [ ] 1-4 Init failure and shutdown handling (handout v3)
+- [ ] 1-5 Logger (handout v3; the logger is built from nothing, no skeleton is left in the repo)
+- [ ] 1-6 Assert and error policy (handout v3)
+- [ ] **Next**: 1-3 with handout v5. Write the bodies yourself. Variable and function names may differ
   from the handouts and the first pass on purpose (renaming is a way to avoid just typing out the
   handout), so do not flag such differences; map the names when reading a later handout. So far:
   `GetMainWindow()` is `GetWindow()`, `SetUpdateCallback` is `SetCallback_Update`,

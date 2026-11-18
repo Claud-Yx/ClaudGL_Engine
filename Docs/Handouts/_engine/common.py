@@ -663,10 +663,11 @@ _FONT_FILE = re.compile(r"^(?P<family>.+)-(?P<weight>\d{3})\.(?P<ext>ttf|otf)$",
 def _local_fonts_css() -> str:
     """@font-face rules for font files placed in _build/fonts (optional).
 
-    Headless Chrome and Edge cannot see a font that is installed "for the
-    current user only". On such a PC, put <Family>-<weight>.ttf files (for
-    example D2Coding-400.ttf and D2Coding-700.ttf) into Docs/Handouts/_build/fonts
-    and they are embedded as data URLs. Without that folder this returns "".
+    Every <Family>-<weight>.ttf file in Docs/Handouts/_build/fonts is embedded
+    as a data URL; make_fonts.py writes them. Two reasons to have them: headless
+    Chrome and Edge cannot see a font installed "for the current user only", and
+    Chrome prints a variable font as Type3 glyphs that Acrobat draws slowly, so
+    every font must be a static file. Without that folder this returns "".
     """
     folder = ENGINE_DIR.parent / "_build" / "fonts"
     if not folder.is_dir():

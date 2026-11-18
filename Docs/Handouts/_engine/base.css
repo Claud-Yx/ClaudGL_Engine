@@ -15,8 +15,8 @@
     --green: #3F7D4E;
     --blue: #2F5F8A;
     --sans: "Noto Sans KR", "Malgun Gothic", sans-serif;
-    --mono: "D2Coding", "Cascadia Mono", Consolas, monospace;
-    --display: "Cascadia Code", "D2Coding", Consolas, monospace;
+    --mono: "Pragmasevka", "Malgun Gothic", Consolas, monospace;
+    --display: "Pragmasevka", "Malgun Gothic", Consolas, monospace;
 }
 
 * { box-sizing: border-box; }

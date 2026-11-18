@@ -24,9 +24,12 @@ description: ClaudGL Engine 강의 자료(A4 디자인 PDF)를 만들거나 강�
   - `sheet.py` — 검수용 접촉 인화와 쪽 확대
 - 부품 견본: `Docs/Handouts/src/gallery.py` → `_build/gallery.pdf`. 엔진을 고친 뒤에는 이것부터 다시 빌드해 깨진 곳이 없는지 본다.
 - 중간 산출물: `Docs/Handouts/_build/` (HTML, 접촉 인화). `.venv/`와 함께 `.gitignore`에 들어 있다.
-- 빌드 환경: `Docs/Handouts/.venv` (pygments, pymupdf, pillow). 없으면 만든다.
-  `python -m venv Docs\Handouts\.venv` 다음 `Docs\Handouts\.venv\Scripts\python.exe -m pip install pygments pymupdf pillow`
-- 글꼴은 PC에 설치된 것을 쓴다: 본문 Noto Sans KR, 코드 D2Coding, 표지 큰 글자 Cascadia Code. 새 PC에서 처음 빌드하면 PDF에 들어간 글꼴을 확인한다 (pymupdf의 `page.get_fonts()`). `D2Coding`이 없고 `GulimChe`가 보이면 브라우저가 D2Coding을 못 찾은 것이다. "사용자 전용"으로 설치된 글꼴은 headless Chrome·Edge에 보이지 않는다 (2026-11-16 회사 PC에서 확인). 그 상태에서는 코드 글꼴이 더 넓은 Cascadia Mono로 바뀌어 코드 블록의 긴 줄이 오른쪽에서 잘리므로, 그렇게 나온 PDF는 건네지 않는다. 고치는 방법은 둘이다. (1) D2Coding을 "모든 사용자용"으로 설치한다. (2) `Docs/Handouts/_build/fonts/`에 `D2Coding-400.ttf`, `D2Coding-700.ttf`를 둔다. `common.py`의 `build()`가 이 폴더의 `<글꼴 이름>-<굵기>.ttf`를 HTML에 넣어 준다 (폴더가 없으면 아무 일도 하지 않는다). 글꼴 묶음(`.ttc`)에서 낱개 파일을 꺼낼 때는 venv에 `fonttools`를 설치해 `TTCollection(경로).fonts[i].save(...)`를 쓴다. `_build/`는 저장소에 올라가지 않으므로 PC마다 한 번 해 둔다. 회사 PC는 (2)로 맞춰 두었다.
+- 빌드 환경: `Docs/Handouts/.venv` (pygments, pymupdf, pillow, fonttools). 없으면 만든다.
+  `python -m venv Docs\Handouts\.venv` 다음 `Docs\Handouts\.venv\Scripts\python.exe -m pip install pygments pymupdf pillow fonttools`
+- 글꼴: 본문 Noto Sans KR, 코드와 표지 큰 글자는 Claud의 Rider 에디터 글꼴인 Pragmasevka (한글은 맑은 고딕으로 넘어간다). 2026-11-18에 D2Coding·Cascadia Code에서 바꿨다.
+  - **가변 글꼴(굵기 축이 있는 파일 하나, 예: `NotoSansKR-VF.ttf`)은 쓰지 않는다.** Chrome이 가변 글꼴을 PDF에 Type3 글리프로 넣고, Acrobat은 Type3를 스크롤할 때마다 다시 그려서 문서가 심하게 느려진다 (2026-11-18 확인: 예전 판은 문서마다 Type3가 1,000개 넘게 들어 있었다).
+  - 그래서 새 PC에서는 빌드 전에 `Docs\Handouts\.venv\Scripts\python.exe -I Docs\Handouts\_engine\make_fonts.py`를 한 번 돌린다. 설치된 가변 Noto Sans KR에서 400·600·700 고정 파일을 만들고, Pragmasevka 고정 파일을 복사해 `Docs/Handouts/_build/fonts/`에 둔다. `common.py`의 `build()`가 이 폴더의 `<글꼴 이름>-<굵기>.ttf`를 HTML에 넣어 준다. 이렇게 하면 "사용자 전용"으로 설치된 글꼴이 headless Chrome·Edge에 안 보이는 문제(2026-11-16 회사 PC에서 확인)도 같이 피한다. `_build/`는 저장소에 올라가지 않으므로 PC마다 한 번 해 둔다.
+  - 빌드한 뒤 PDF에 들어간 글꼴을 확인한다 (pymupdf의 `page.get_fonts()`). 종류가 전부 `Type0`이고 `NotoSansKR-Regular`·`NotoSansKR-Bold`·`Pragmasevka`가 보여야 한다. `Type3`가 하나라도 보이면 건네지 않는다. 코드 글꼴이 다른 것으로 바뀌면 글자 폭이 달라져 코드 블록의 긴 줄이 오른쪽에서 잘릴 수 있다 (Pragmasevka와 예전 D2Coding은 둘 다 폭 0.5em).
 
 ## 번호와 버전
 

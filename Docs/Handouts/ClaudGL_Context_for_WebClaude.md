@@ -82,9 +82,9 @@ Part 5 Advanced:
 
 파일 이름은 `ClaudGL_<강 번호>_<주제>_v<버전>.pdf`다. 한 번 나간 PDF를 고치면 버전을 올린다.
 
-- `ClaudGL_00_Plan_v5.pdf` — 전체 강의 계획서. 스터디를 시작할 때 보는 지침서라서 진행 상황은 들어 있지 않다.
-- `ClaudGL_1-1_ProjectAndWindow_v3.pdf`, `ClaudGL_1-2_GameLoop_v4.pdf`, `ClaudGL_1-3_Input_v4.pdf`,
-  `ClaudGL_1-4_InitAndShutdown_v2.pdf`, `ClaudGL_1-5_Logger_v2.pdf`, `ClaudGL_1-6_Assert_v2.pdf`
+- `ClaudGL_00_Plan_v6.pdf` — 전체 강의 계획서. 스터디를 시작할 때 보는 지침서라서 진행 상황은 들어 있지 않다.
+- `ClaudGL_1-1_ProjectAndWindow_v4.pdf`, `ClaudGL_1-2_GameLoop_v5.pdf`, `ClaudGL_1-3_Input_v5.pdf`,
+  `ClaudGL_1-4_InitAndShutdown_v3.pdf`, `ClaudGL_1-5_Logger_v3.pdf`, `ClaudGL_1-6_Assert_v3.pdf`
   — 여섯 강 모두 2026-11-16에 같은 양식으로 다시 썼다. 처음부터 직접 쓰는 자료이고 함수 설명, 예시, 그림,
   구현 미션이 있다. 완성 코드는 없다. 1차 코드는 인용하지 않고, 엔진 코드는 함수 이름으로 가리킨다.
   1-2강은 2026-11-17에 2.2절의 표와 문장 하나를 고쳐 v4가 됐다.
