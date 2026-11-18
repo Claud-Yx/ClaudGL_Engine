@@ -1,9 +1,15 @@
 #include "pch.h"
 
 #include "Core/EngineCore.h"
+#include "Manager/InputManager.h"
 
 void cbFramebufferSize( GLFWwindow* window, int width, int height );
 void cbUpdate( float delta_time );
+
+namespace
+{
+    float r{}, g{}, b{};
+}
 
 int main( void )
 {
@@ -32,10 +38,23 @@ void cbFramebufferSize( GLFWwindow* window, int width, int height )
 
 void cbUpdate( float delta_time )
 {
-    auto time = GEngine::GetElapsedTime();
-    auto r = static_cast<float>((glm::sin( time ) + 1.0) * 0.5);
-    auto g = static_cast<float>((glm::sin( time * 0.8 ) + 1.0) * 0.5);
-    auto b = static_cast<float>((glm::sin( time * 0.5 ) + 1.0) * 0.5);
-    
+    // Input
+    auto input = GEngine::Get().GetInputManager();
+    if ( not input ) return;
+
+    if ( input->IsKeyPressed( EKey::Escape ) ) GEngine::Get().Stop();
+    if ( input->IsKeyPressed( EKey::A ) ) r = 1.f;
+    if ( input->IsKeyReleased( EKey::A ) ) r = 0.f;
+    if ( input->IsKeyPressed( EKey::S ) ) g = 1.f;
+    if ( input->IsKeyReleased( EKey::S ) ) g = 0.f;
+    if ( input->IsKeyPressed( EKey::D ) ) b = 1.f;
+    if ( input->IsKeyReleased( EKey::D ) ) b = 0.f;
+    if ( input->IsKeyHeld( EKey::J ) ) r = glm::clamp( r + delta_time * 0.25f, 0.f, 1.f );
+    else r                               = glm::clamp( r - delta_time * 0.25f, 0.f, 1.f );
+    if ( input->IsKeyHeld( EKey::K ) ) g = glm::clamp( g + delta_time * 0.25f, 0.f, 1.f );
+    else g                               = glm::clamp( g - delta_time * 0.25f, 0.f, 1.f );
+    if ( input->IsKeyHeld( EKey::L ) ) b = glm::clamp( b + delta_time * 0.25f, 0.f, 1.f );
+    else b                               = glm::clamp( b - delta_time * 0.25f, 0.f, 1.f );
+
     glClearColor( r, g, b, 0.0f );
 }

@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+class MInputManager;
+
 class GEngine
 {
 public:
@@ -18,12 +20,16 @@ public:
     static GEngine& Get();
     GLFWwindow*     GetWindow() const; // why does main need this in lesson 1-1?
 
+    // Manager getter
+    MInputManager* GetInputManager();
+
     InitErrorCode Init( GLint       version_major, GLint version_minor, int   width, int height,
                         const char* title, GLFWmonitor*  monitor, GLFWwindow* share );
 
     void SetCallback_Update( std::function<void( float )> func );
     void SetCallback_FramebufferSize( GLFWframebuffersizefun func );
     void Run();
+    void Stop();
 
     double        GetDeltaTime() const;
     static double GetElapsedTime();
@@ -36,6 +42,9 @@ private:
 
     // Which special member functions must be private or deleted? (chapter 7)
     GLFWwindow* _main_window{}; // what does this hold before Init() runs?
+
+    // Manager
+    std::unique_ptr<MInputManager> _input_manager{};
 
     bool   _is_running{ true };
     double _last_frame_time{};

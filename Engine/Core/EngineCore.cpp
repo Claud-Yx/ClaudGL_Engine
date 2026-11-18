@@ -1,5 +1,6 @@
 ﻿#include "pch.h"
 #include "EngineCore.h"
+#include "Manager/InputManager.h"
 
 #include <utility>
 
@@ -20,6 +21,11 @@ GLFWwindow* GEngine::GetWindow() const
     return _main_window;
 }
 
+MInputManager* GEngine::GetInputManager()
+{
+    return _input_manager.get();
+}
+
 GEngine::InitErrorCode GEngine::Init( GLint version_major, GLint version_minor, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share )
 {
     if ( glfwInit() == GLFW_FALSE ) return InitErrorCode::Fail;
@@ -34,6 +40,14 @@ GEngine::InitErrorCode GEngine::Init( GLint version_major, GLint version_minor, 
     glfwMakeContextCurrent( _main_window );
     if ( not gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) ) )
         return InitErrorCode::Fail;
+
+    // Set engine pointer into window user pointer
+    glfwSetWindowUserPointer( _main_window, this );
+
+    // Init managers
+    _input_manager = std::make_unique<MInputManager>();
+    glfwSetKeyCallback( _main_window, MInputManager::cbSetKey );
+
 
     return InitErrorCode::Success;
 }
@@ -66,8 +80,16 @@ void GEngine::Run()
         // Update client
         Update( static_cast<float>(_delta_time) );
 
+        // Input manager update
+        if ( _input_manager ) _input_manager->Update();
+
         glfwSwapBuffers( _main_window );
     }
+}
+
+void GEngine::Stop()
+{
+    _is_running = false;
 }
 
 double GEngine::GetDeltaTime() const
@@ -82,5 +104,6 @@ double GEngine::GetElapsedTime()
 
 void GEngine::Update( float delta_time )
 {
+    // Client update
     if ( _on_Update ) _on_Update( delta_time );
 }
