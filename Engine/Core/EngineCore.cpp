@@ -103,6 +103,13 @@ void GEngine::Run()
 
 void GEngine::Shutdown()
 {
+    // Remove callback
+    if ( _main_window )
+    {
+        glfwSetFramebufferSizeCallback( _main_window, nullptr );
+        glfwSetKeyCallback( _main_window, nullptr );
+    }
+
     _input_manager.reset();
 
     if ( _main_window ) glfwDestroyWindow( _main_window );
