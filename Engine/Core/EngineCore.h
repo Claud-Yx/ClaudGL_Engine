@@ -7,8 +7,10 @@ class GEngine
 public:
     enum class InitErrorCode : int8_t
     {
-        Fail    = -1,
-        Success = 0
+        Success           = 0,
+        GLFW_InitFailed   = 1,
+        GLFW_WindowFailed = 2,
+        GLAD_Failed       = 3
     };
 
     ~GEngine();
@@ -23,13 +25,16 @@ public:
     // Manager getter
     MInputManager* GetInputManager();
 
-    InitErrorCode Init( GLint       version_major, GLint version_minor, int   width, int height,
-                        const char* title, GLFWmonitor*  monitor, GLFWwindow* share );
+    [[nodiscard]] InitErrorCode Init( GLint       version_major, GLint version_minor, int   width, int height,
+                                      const char* title, GLFWmonitor*  monitor, GLFWwindow* share );
 
-    void SetCallback_Update( std::function<void( float )> func );
-    void SetCallback_FramebufferSize( GLFWframebuffersizefun func );
+    void        SetCallback_Update( std::function<void( float )> func );
+    void        SetCallback_FramebufferSize( GLFWframebuffersizefun func );
+    static void SetCallback_SetError( GLFWerrorfun func );
+
     void Run();
-    void Stop();
+    void Shutdown();
+    void RequestQuit();
 
     double        GetDeltaTime() const;
     static double GetElapsedTime();
@@ -47,6 +52,7 @@ private:
     std::unique_ptr<MInputManager> _input_manager{};
 
     bool   _is_running{ true };
+    bool   _is_glfw_initialized{ false };
     double _last_frame_time{};
     double _delta_time{};
 };

@@ -16,13 +16,13 @@ public:
 
     void Update(); // once per frame: where in the frame, and why there? (5.2)
 
-    bool IsKeyPressed( EKey key );  // one row each of the table in chapter 5
+    bool IsKeyPressed( EKey key ); // one row each of the table in chapter 5
     bool IsKeyHeld( EKey key );
     bool IsKeyReleased( EKey key );
 
 private:
     static constexpr int kKeyRangeMax{ static_cast<int>(EKey::RangeMax) };
 
-    std::array<bool, kKeyRangeMax> _cur_keys;   // who writes this, and when?
-    std::array<bool, kKeyRangeMax> _prev_keys;  // who writes this, and when?
+    std::array<bool, kKeyRangeMax> _cur_keys{};
+    std::array<bool, kKeyRangeMax> _prev_keys{};
 };

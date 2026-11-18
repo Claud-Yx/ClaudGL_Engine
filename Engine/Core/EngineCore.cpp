@@ -6,8 +6,7 @@
 
 GEngine::~GEngine()
 {
-    glfwDestroyWindow( _main_window );
-    glfwTerminate();
+    Shutdown();
 }
 
 GEngine& GEngine::Get()
@@ -28,18 +27,28 @@ MInputManager* GEngine::GetInputManager()
 
 GEngine::InitErrorCode GEngine::Init( GLint version_major, GLint version_minor, int width, int height, const char* title, GLFWmonitor* monitor, GLFWwindow* share )
 {
-    if ( glfwInit() == GLFW_FALSE ) return InitErrorCode::Fail;
+    if ( glfwInit() == GLFW_FALSE ) return InitErrorCode::GLFW_InitFailed;
+    _is_glfw_initialized = true;
 
     glfwWindowHint( GLFW_CONTEXT_VERSION_MAJOR, version_major );
     glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, version_minor );
     glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
 
     _main_window = glfwCreateWindow( width, height, title, monitor, share );
-    if ( not _main_window ) return InitErrorCode::Fail;
+    if ( not _main_window )
+    {
+        // Undo what Init() has done so far: GLFW is up, the window is not
+        Shutdown();
+        return InitErrorCode::GLFW_WindowFailed;
+    }
 
     glfwMakeContextCurrent( _main_window );
     if ( not gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) ) )
-        return InitErrorCode::Fail;
+    {
+        // Undo what Init() has done so far: GLFW and the window are both up
+        Shutdown();
+        return InitErrorCode::GLAD_Failed;
+    }
 
     // Set engine pointer into window user pointer
     glfwSetWindowUserPointer( _main_window, this );
@@ -60,6 +69,11 @@ void GEngine::SetCallback_Update( std::function<void( float )> func )
 void GEngine::SetCallback_FramebufferSize( GLFWframebuffersizefun func )
 {
     glfwSetFramebufferSizeCallback( _main_window, func );
+}
+
+void GEngine::SetCallback_SetError( GLFWerrorfun func )
+{
+    glfwSetErrorCallback( func );
 }
 
 void GEngine::Run()
@@ -87,9 +101,26 @@ void GEngine::Run()
     }
 }
 
-void GEngine::Stop()
+void GEngine::Shutdown()
 {
-    _is_running = false;
+    _input_manager.reset();
+
+    if ( _main_window ) glfwDestroyWindow( _main_window );
+    _main_window = nullptr;
+
+    if ( _is_glfw_initialized )
+    {
+        glfwTerminate();
+        _is_glfw_initialized = false;
+    }
+}
+
+void GEngine::RequestQuit()
+{
+    if ( _is_running )
+    {
+        _is_running = false;
+    }
 }
 
 double GEngine::GetDeltaTime() const
