@@ -123,7 +123,8 @@ lists, with default choices for the lesson's decisions where it has any.
   `cbSetKey` checks both ends of the key range with `IsValidKey`, and `GEngine::Stop()` exists and
   the client quits on Esc)
 - [x] 1-4 Init failure and shutdown handling (handout v4; code at tag `lesson-1-4`, 2026-11-19.
-  `Shutdown()` releases the input manager, then the window, then GLFW, and is safe to call twice; a
+  `Shutdown()` detaches the window's callbacks, then releases the input manager, the window and GLFW
+  in that order, and is safe to call twice; a
   failed `Init` calls it before returning. The last cleanup was written by the assistant at Claud's
   request, to learn from the diff: the flag `_is_glfw_initialized`, `Shutdown()` in the failure branches,
   and the error codes `GLFW_InitFailed` / `GLFW_WindowFailed` / `GLAD_Failed`. None of the nine small
