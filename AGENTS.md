@@ -57,7 +57,7 @@ Lesson numbers are `Part-order` (1-5 = fifth lesson of Part 1). The single sourc
 ### Part 1: Core (API-agnostic)
 - [x] 1-1 Project setup and window (GLFW + GLAD + GLM, GEngine singleton)
 - [x] 1-2 Game Loop + Delta Time (Run, Update callback)
-- [ ] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
+- [x] 1-3 Input System (MInputManager, EKey enum, GLFW callback pattern)
 - [ ] 1-4 Init failure and shutdown handling
 - [ ] 1-5 Logger (Debug logging)
 - [ ] 1-6 Assert and error handling policy
@@ -114,18 +114,26 @@ function reference cards, worked examples and figures, and no quotes of the firs
 - [x] 1-2 Game Loop + Delta Time (handout v5; code at tag `lesson-1-2`, 2026-11-17. The 2-second
   color cycle was skipped on purpose: `cbUpdate` takes absolute time from `GEngine::GetElapsedTime()`
   instead of accumulating dt)
-- [ ] 1-3 Input System (handout v5; the EKey list in `InputKeys.h` is kept, not retyped)
+- [x] 1-3 Input System (handout v5; code at tag `lesson-1-3`, 2026-11-18; the EKey list in
+  `InputKeys.h` is kept, not retyped. Two items the handouts leave for 1-4 are already done:
+  `cbSetKey` checks both ends of the key range with `IsValidKey`, and `GEngine::Stop()` exists and
+  the client quits on Esc)
 - [ ] 1-4 Init failure and shutdown handling (handout v3)
 - [ ] 1-5 Logger (handout v3; the logger is built from nothing, no skeleton is left in the repo)
 - [ ] 1-6 Assert and error policy (handout v3)
-- [ ] **Next**: 1-3 with handout v5. Write the bodies yourself. Variable and function names may differ
+- [ ] **Next**: 1-4 with handout v3. Write the bodies yourself. Variable and function names may differ
   from the handouts and the first pass on purpose (renaming is a way to avoid just typing out the
   handout), so do not flag such differences; map the names when reading a later handout. So far:
   `GetMainWindow()` is `GetWindow()`, `SetUpdateCallback` is `SetCallback_Update`,
-  `SetFramebufferSizeCallback` is `SetCallback_FramebufferSize`, `_on_update` is `_on_Update`. The code
-  also has `GetDeltaTime()` and a static `GetElapsedTime()` that the handouts do not have. The old
-  code-reading handouts in `Legacy/` (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each
-  lesson's missions.
+  `SetFramebufferSizeCallback` is `SetCallback_FramebufferSize`, `_on_update` is `_on_Update`,
+  `_current_keys` / `_previous_keys` are `_cur_keys` / `_prev_keys`, and the quit request the 1-4
+  handout calls `RequestQuit` (an example name) is `Stop()`. The code also has `GetDeltaTime()` and a
+  static `GetElapsedTime()` that the handouts do not have. The old code-reading handouts in `Legacy/`
+  (1-1 v2, 1-2 v2, 1-3 v3) are the commentary to read after each lesson's missions.
+- Decided in 1-3: the key callback stays a static member of `MInputManager` and reaches the arrays
+  through the engine stored in the window user pointer, as the handout has it. This makes the engine
+  and the input manager know each other (in the `.cpp` files only). The alternative, a callback owned by
+  the engine that forwards to the input manager, is left for 3-2.
 - Deferred on purpose: drawing while the window is being resized. The loop stalls inside
   `glfwPollEvents()` during a resize drag; the fix is a window refresh callback plus a separate
   "one frame" function. No handout covers it. Revisit at 3-2, when window code is split from `GEngine`.
